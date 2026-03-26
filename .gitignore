@@ -1,0 +1,52 @@
+# ── Build outputs ─────────────────────────────────────────────
+out/
+out_*/
+out-standalone/
+out-spa/
+
+# ── 11ty / Eleventy ──────────────────────────────────────────
+.cache/
+.eleventy-cache/
+
+# ── Tailwind / LightningCSS ──────────────────────────────────
+.tailwindcss-cache/
+.lightningcss-cache/
+
+# ── Node / npm ────────────────────────────────────────────────
+node_modules/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Environment / secrets ────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── OS files ──────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── FUSE filesystem artifacts ─────────────────────────────────
+.fuse_hidden*
+
+# ── Editor / IDE ──────────────────────────────────────────────
+*.swp
+*.swo
+*~
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ── Claude local settings (personal, not committed) ──────────
+.claude/settings.local.json
+
+# ── Testing / screenshots ────────────────────────────────────
+_screenshots/
+
+# ── Misc ──────────────────────────────────────────────────────
+*.log
+*.tmp
+*.temp

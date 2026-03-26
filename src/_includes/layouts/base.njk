@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" id="meta-theme-color" content="oklch(0.985 0 0)" />
+    <meta name="view-transition" content="same-origin" />
+
+    <title>{{ title or site.name }}</title>
+    <meta name="description" content="{{ description or site.description }}" />
+
+    {# -- Favicon (simple text-based for now) -------------------------------- #}
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%97%86%3C/text%3E%3C/svg%3E"
+      type="image/svg+xml"
+    />
+
+    {# -- Prevent flash: apply dark class before paint ----------------------- #}
+    <script>
+      (function () {
+        var p = localStorage.getItem('theme-preference') || 'system';
+        var dark =
+          p === 'dark' ||
+          (p === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+        var m = document.querySelector('#meta-theme-color');
+        if (m) m.content = dark ? 'oklch(0.15 0 0)' : 'oklch(0.985 0 0)';
+      })();
+    </script>
+
+    {# -- Fonts: preconnect + Google Fonts (Neometric stack) ----------------- #}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hubot+Sans:wght@200..900&family=Inter+Tight:wght@400;500;600;700;800;900&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {# -- Tailwind v4 Browser Build ------------------------------------------ #}
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @layer base, components, utilities;
+
+      @theme {
+        /* -- Fonts -- */
+        --font-sans: var(--font-sans);
+        --font-heading: var(--font-heading);
+        --font-body: var(--font-body);
+        --font-mono: var(--font-mono);
+        --font-serif: var(--font-serif);
+
+        /* -- Surface system -- */
+        --color-surface: var(--surface);
+        --color-surface-dim: var(--surface-dim);
+        --color-surface-bright: var(--surface-bright);
+        --color-surface-container-lowest: var(--surface-container-lowest);
+        --color-surface-container-low: var(--surface-container-low);
+        --color-surface-container: var(--surface-container);
+        --color-surface-container-high: var(--surface-container-high);
+        --color-surface-container-highest: var(--surface-container-highest);
+        --color-on-surface: var(--on-surface);
+        --color-on-surface-variant: var(--on-surface-variant);
+
+        /* -- Color roles -- */
+        --color-primary: var(--primary);
+        --color-on-primary: var(--on-primary);
+        --color-primary-container: var(--primary-container);
+        --color-secondary: var(--secondary);
+        --color-on-secondary: var(--on-secondary);
+        --color-tertiary: var(--tertiary);
+        --color-on-tertiary: var(--on-tertiary);
+        --color-error: var(--error);
+        --color-on-error: var(--on-error);
+
+        /* -- Outline -- */
+        --color-outline: var(--outline);
+        --color-outline-variant: var(--outline-variant);
+
+        /* -- Shadows -- */
+        --shadow-1: var(--shadow-1);
+        --shadow-2: var(--shadow-2);
+        --shadow-3: var(--shadow-3);
+        --shadow-4: var(--shadow-4);
+        --shadow-5: var(--shadow-5);
+
+        /* -- Radii -- */
+        --radius-xs: var(--radius-xs);
+        --radius-sm: var(--radius-sm);
+        --radius-md: var(--radius-md);
+        --radius-lg: var(--radius-lg);
+        --radius-xl: var(--radius-xl);
+        --radius-full: var(--radius-full);
+      }
+    </style>
+
+    {# -- CSS files ---------------------------------------------------------- #}
+    <link rel="stylesheet" href="/assets/css/tokens.css" />
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+    <link rel="stylesheet" href="/assets/css/utilities.css" />
+
+    {# -- Lucide Icons CDN --------------------------------------------------- #}
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    {{ content | safe }}
+
+    {# -- JS modules (deferred) --------------------------------------------- #}
+    <script defer src="/assets/js/observer.js"></script>
+    <script defer src="/assets/js/theme-toggle.js"></script>
+    <script defer src="/assets/js/view-transitions.js"></script>
+    <script defer src="/assets/js/icons.js"></script>
+    <script defer src="/assets/js/mobile-menu.js"></script>
+  </body>
+</html>

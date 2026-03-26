@@ -1,0 +1,47 @@
+---
+layout: layouts/page.njk
+title: Home
+permalink: /
+---
+
+{% include "sections/hero/hero-01.njk" %}
+
+{# -- Feature cards --------------------------------------------------------- #}
+<section class="section" data-observe="stagger" style="background: var(--surface);">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: var(--space-12);" data-observe="reveal-up">
+      Built for prototyping
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="card" data-observe="reveal-up" style="--stagger-index: 0;">
+        <div style="margin-bottom: var(--space-4); color: var(--primary);">
+          <i data-lucide="layers" style="width: 2rem; height: 2rem;"></i>
+        </div>
+        <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Token System</h3>
+        <p style="color: var(--on-surface-variant);">
+          Design-system-agnostic tokens. Swap to Material v3, Basecoat, or your own system by changing one file.
+        </p>
+      </div>
+      <div class="card" data-observe="reveal-up" style="--stagger-index: 1;">
+        <div style="margin-bottom: var(--space-4); color: var(--primary);">
+          <i data-lucide="puzzle" style="width: 2rem; height: 2rem;"></i>
+        </div>
+        <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Section Library</h3>
+        <p style="color: var(--on-surface-variant);">
+          Reusable Nunjucks partials for nav, hero, CTA, footer, and more. Compose pages from sections.
+        </p>
+      </div>
+      <div class="card" data-observe="reveal-up" style="--stagger-index: 2;">
+        <div style="margin-bottom: var(--space-4); color: var(--primary);">
+          <i data-lucide="zap" style="width: 2rem; height: 2rem;"></i>
+        </div>
+        <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Motion-Aware</h3>
+        <p style="color: var(--on-surface-variant);">
+          Respects prefers-reduced-motion. Single IntersectionObserver. View Transitions API.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "sections/cta/cta-01.njk" %}

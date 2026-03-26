@@ -1,0 +1,16 @@
+---
+layout: layouts/base.njk
+---
+
+{# -- Navigation ----------------------------------------------------------- #}
+{% set navFile = "sections/nav/" + (navVariant or "nav-01") + ".njk" %}
+{% include navFile %}
+
+{# -- Main content --------------------------------------------------------- #}
+<main id="main-content">
+  {{ content | safe }}
+</main>
+
+{# -- Footer --------------------------------------------------------------- #}
+{% set footerFile = "sections/footer/" + (footerVariant or "footer-01") + ".njk" %}
+{% include footerFile %}

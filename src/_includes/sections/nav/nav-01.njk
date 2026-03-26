@@ -1,0 +1,68 @@
+{# Navigation — Top bar (nav-01) #}
+<header class="sticky top-0 z-50" style="background: var(--surface); border-bottom: 1px solid var(--outline-variant);">
+  <nav class="container flex-between" style="height: 4rem;" aria-label="Main navigation">
+
+    {# -- Logo / Brand ----------------------------------------------------- #}
+    <a href="/" class="flex items-center gap-2 no-underline" style="font-family: var(--font-heading); font-weight: 700; font-size: var(--text-xl); color: var(--on-surface);">
+      <span aria-hidden="true">&#9670;</span>
+      {{ site.name or "aduxion" }}
+    </a>
+
+    {# -- Desktop links ---------------------------------------------------- #}
+    <ul class="hidden md:flex items-center gap-6 list-none" style="font-family: var(--font-sans); font-size: var(--text-sm);">
+      {% for item in nav.items %}
+        <li>
+          <a href="{{ item.url }}" style="color: var(--on-surface-variant); text-decoration: none; transition: color 150ms;">
+            {{ item.label }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {# -- Actions ---------------------------------------------------------- #}
+    <div class="flex items-center gap-3">
+      {# Theme toggle #}
+      <button
+        id="theme-toggle"
+        class="btn btn--ghost btn--icon"
+        aria-label="Toggle theme"
+        title="Toggle theme"
+      >
+        <i data-lucide="sun" class="dark:hidden" style="width:20px;height:20px;"></i>
+        <i data-lucide="moon" class="hidden dark:block" style="width:20px;height:20px;"></i>
+      </button>
+
+      {# Mobile menu button #}
+      <button
+        id="mobile-menu-toggle"
+        class="btn btn--ghost btn--icon md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <i data-lucide="menu" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+  </nav>
+
+  {# -- Mobile menu -------------------------------------------------------- #}
+  <div
+    id="mobile-menu"
+    class="md:hidden"
+    style="display: none; padding: var(--space-4); border-top: 1px solid var(--outline-variant);"
+    aria-label="Mobile navigation"
+  >
+    <ul class="flex-col gap-2 list-none" style="font-family: var(--font-sans);">
+      {% for item in nav.items %}
+        <li>
+          <a
+            href="{{ item.url }}"
+            style="display: block; padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); color: var(--on-surface); text-decoration: none;"
+          >
+            {{ item.label }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</header>

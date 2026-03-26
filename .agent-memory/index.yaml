@@ -1,0 +1,19 @@
+# .agent-memory index — master registry of all memory files
+# Read this first. Load only what's relevant to the current task.
+# Any AI interface may read, update, compact, or trim this index.
+
+version: "2.1"
+updated: 2026-03-26
+
+memories:
+  - id: conventions/css-architecture
+    type: convention
+    path: conventions/css-architecture.md
+    description: "4-file CSS: tokens.css, base.css, components.css, utilities.css. All values via var(--token). oklch colors. @layer system."
+    tags: [css, tokens, tailwind, oklch, architecture]
+
+  - id: conventions/js-architecture
+    type: convention
+    path: conventions/js-architecture.md
+    description: "Vanilla ES6 with single IntersectionObserver, prefers-reduced-motion, View Transitions API, lifecycle events."
+    tags: [javascript, observer, motion, view-transitions, architecture]

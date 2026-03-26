@@ -1,0 +1,58 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "theme",
+          "source",
+          "layer",
+          "apply",
+          "tailwind",
+          "config",
+          "variant",
+          "custom-variant",
+          "utility"
+        ]
+      }
+    ],
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["theme", "oklch", "color-mix"]
+      }
+    ],
+    "import-notation": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "custom-property-pattern": null,
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "media-query-no-invalid": null,
+    "hue-degree-notation": null,
+    "color-function-notation": null,
+    "comment-empty-line-before": null,
+    "rule-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "custom-property-empty-line-before": null,
+    "length-zero-no-unit": null,
+    "alpha-value-notation": null,
+    "value-keyword-case": null,
+    "number-max-precision": null,
+    "lightness-notation": null,
+    "shorthand-property-no-redundant-values": null,
+    "selector-no-vendor-prefix": null,
+    "property-no-vendor-prefix": null,
+    "declaration-block-single-line-max-declarations": null,
+    "selector-not-notation": null,
+    "media-feature-range-notation": null,
+    "at-rule-empty-line-before": null,
+    "declaration-block-no-duplicate-custom-properties": null
+  },
+  "ignoreFiles": [
+    "out/**",
+    "out-standalone/**",
+    "out-spa/**",
+    "node_modules/**"
+  ]
+}

@@ -1,0 +1,9 @@
+---
+description: "Agent memory integration — reads AGENTS.md and .agent-memory/"
+globs:
+alwaysApply: true
+---
+
+Read `.agent-memory/index.yaml` to discover available persistent context.
+Load relevant memory files based on the current task.
+After significant work, save learnings with source: `vscode`.

@@ -1,0 +1,166 @@
+/* ============================================================================
+   COMPONENTS — Reusable UI component classes
+   All values reference tokens — never hardcoded.
+   ============================================================================ */
+
+@layer components {
+  /* -- Card ----------------------------------------------------------------- */
+  .card {
+    background: var(--surface-container-low);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-1);
+    transition: box-shadow var(--duration-normal) var(--easing-standard),
+                transform var(--duration-normal) var(--easing-standard);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-2);
+    transform: translateY(-2px);
+  }
+
+  .card--elevated {
+    box-shadow: var(--shadow-2);
+  }
+
+  .card--elevated:hover {
+    box-shadow: var(--shadow-3);
+  }
+
+  .card--outlined {
+    box-shadow: none;
+    border: 1px solid var(--outline);
+  }
+
+  .card--filled {
+    background: var(--surface-container-highest);
+    border: none;
+    box-shadow: none;
+  }
+
+  /* -- Button --------------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    line-height: 1;
+    padding: var(--space-3) var(--space-6);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--easing-standard),
+                box-shadow var(--duration-fast) var(--easing-standard),
+                transform var(--duration-fast) var(--easing-standard);
+    text-decoration: none;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* Variants */
+  .btn--primary {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+  .btn--primary:hover {
+    box-shadow: var(--shadow-1);
+    filter: brightness(1.08);
+  }
+
+  .btn--secondary {
+    background: var(--surface-container-high);
+    color: var(--on-surface);
+  }
+  .btn--secondary:hover {
+    background: var(--surface-container-highest);
+  }
+
+  .btn--outline {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--outline);
+  }
+  .btn--outline:hover {
+    background: var(--primary-container);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--on-surface);
+  }
+  .btn--ghost:hover {
+    background: var(--surface-container);
+  }
+
+  .btn--destructive {
+    background: var(--error);
+    color: var(--on-error);
+  }
+  .btn--destructive:hover {
+    filter: brightness(1.08);
+  }
+
+  /* Sizes */
+  .btn--xs { font-size: var(--text-xs); padding: var(--space-1) var(--space-3); }
+  .btn--sm { font-size: var(--text-xs); padding: var(--space-2) var(--space-4); }
+  .btn--lg { font-size: var(--text-base); padding: var(--space-4) var(--space-8); }
+  .btn--icon {
+    padding: var(--space-3);
+    aspect-ratio: 1;
+  }
+
+  /* -- Chip ----------------------------------------------------------------- */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+    transition: background var(--duration-fast) var(--easing-standard);
+  }
+
+  .chip--filled {
+    background: var(--primary-container);
+    color: var(--primary);
+    border-color: transparent;
+  }
+
+  .chip--sm { font-size: 0.625rem; padding: 2px var(--space-2); }
+  .chip--lg { font-size: var(--text-sm); padding: var(--space-2) var(--space-4); }
+
+  /* -- Observe: reveal animation base states -------------------------------- */
+  [data-observe="reveal"],
+  [data-observe="reveal-up"],
+  [data-observe~="reveal"],
+  [data-observe~="reveal-up"] {
+    opacity: 0;
+    transition: opacity var(--duration-slow) var(--easing-decelerate),
+                transform var(--duration-slow) var(--easing-decelerate);
+  }
+
+  [data-observe="reveal-up"],
+  [data-observe~="reveal-up"] {
+    transform: translateY(1.5rem);
+  }
+
+  [data-observe="reveal"].observed,
+  [data-observe="reveal-up"].observed,
+  [data-observe~="reveal"].observed,
+  [data-observe~="reveal-up"].observed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

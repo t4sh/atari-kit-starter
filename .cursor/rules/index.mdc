@@ -1,0 +1,18 @@
+---
+description: "{{PROJECT_NAME}} — project instructions and quick reference"
+globs:
+alwaysApply: true
+---
+
+Read `AGENTS.md` in the project root first. It contains the complete project context,
+structure, rules, and conventions shared across all AI tools.
+
+## Quick Reference
+
+- **Tech stack:** Eleventy v3 + Nunjucks, Tailwind v4 (browser CDN), vanilla ES6
+- **CSS:** 4-file token-driven system (`tokens.css`, `base.css`, `components.css`, `utilities.css`)
+- **JS:** Single IntersectionObserver, prefers-reduced-motion, View Transitions API
+- **Layouts:** `{{ content | safe }}` chain — NOT `{% block %}` / `{% extends %}`
+- **Tokens:** All values via `var(--token)` — never hardcoded colors/spacing/radii
+- **Sections:** `_includes/sections/{domain}/{domain}-{nn}.njk`
+- **Dev:** `npm run dev` → localhost:3000

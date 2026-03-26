@@ -1,0 +1,8 @@
+out/
+out-standalone/
+out-spa/
+node_modules/
+.cache/
+.eleventy-cache/
+*.min.js
+*.min.css
