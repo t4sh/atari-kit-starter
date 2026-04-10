@@ -6,11 +6,26 @@
       "Glob",
       "Grep",
       "Bash(npm run *)",
-      "Bash(@11ty/eleventy *)",
-      "Bash(bash .agent-memory/bootstrap.sh *)",
-      "WebFetch(domain:skills.sh)",
       "WebSearch",
-      "Read(//Users/ash/Projects/GenAI/linkedIn-01/**)"
+      "Bash(git rm:*)",
+      "Read(//Users/ash/Projects/GenAI/linkedIn-01/src/assets/css/**)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter fetch)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter status -sb)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter diff .claude/settings.json package.json)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter add package.json)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter commit -m \"build\\(node\\): bump engine requirement to node 24\")",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter show HEAD:src/assets/css/components.css)",
+      "Read(//tmp/**)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter diff --stat)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter diff src/assets/css/components.css)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter diff src/assets/css/tokens.css)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter diff src/_includes/layouts/base.njk)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter add src/_includes/layouts/base.njk src/assets/css/base.css src/assets/css/components.css src/assets/css/tokens.css)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter commit -m ':*)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter log --oneline -6)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter add src/_includes/layouts/base.njk src/assets/css/tokens.css src/assets/css/components.css)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter add .claude/settings.json)",
+      "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter commit -m \"chore\\(claude\\): expand local tool permissions\")"
     ]
   }
 }
