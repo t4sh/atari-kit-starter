@@ -9,8 +9,7 @@
 #   1. Replace all {{PROJECT_NAME}} / {{project-name}} placeholders
 #   2. Rename lifecycle events in JS files
 #   3. Run npm install
-#   4. Initialize agent memory
-#   5. Print success message
+#   4. Print success message
 # ─────────────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -61,18 +60,7 @@ echo "  Installing dependencies..."
 npm install --silent 2>&1 | tail -1
 echo "    Done."
 
-# ── 4. Initialize agent memory ──
-echo "  Initializing agent memory..."
-if [ -f .agent-memory/bootstrap.sh ]; then
-  bash .agent-memory/bootstrap.sh init . 2>&1 | grep -E "✓|⊘" | head -5
-elif [ -f .agents/skills/agent-memory/bootstrap.sh ]; then
-  cp .agents/skills/agent-memory/bootstrap.sh .agent-memory/bootstrap.sh
-  chmod +x .agent-memory/bootstrap.sh
-  bash .agent-memory/bootstrap.sh init . 2>&1 | grep -E "✓|⊘" | head -5
-fi
-echo "    Done."
-
-# ── 5. Success ──
+# ── 4. Success ──
 echo ""
 echo "───────────────────────────────────────"
 echo "  $PROJECT_NAME is ready!"
@@ -85,4 +73,8 @@ echo ""
 echo "  Add pages:     src/pages/your-page.njk"
 echo "  Add sections:  src/_includes/sections/domain/domain-01.njk"
 echo "  Swap design:   src/assets/css/tokens.css"
+echo ""
+echo "  Optional — cross-session AI memory:"
+echo "    npx skills add t4sh/skills4sh --skill agent-memory"
+echo "    (details: https://skills.sh/t4sh/skills4sh/agent-memory)"
 echo "───────────────────────────────────────"
