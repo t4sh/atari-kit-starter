@@ -7,7 +7,7 @@
       "Grep",
       "Bash(npm run *)",
       "WebSearch",
-      "Bash(git rm:*)",
+      "Bash(git rm:*)", 
       "Read(//Users/ash/Projects/GenAI/linkedIn-01/src/assets/css/**)",
       "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter fetch)",
       "Bash(git -C /Users/ash/Projects/GenAI/atari-kit-starter status -sb)",

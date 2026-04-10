@@ -50,3 +50,4 @@ _screenshots/
 *.log
 *.tmp
 *.temp
+.claude/settings.json
