@@ -7,12 +7,14 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "npx @11ty/eleventy --serve --port=3000",
-    "build": "npx @11ty/eleventy",
-    "build:all": "npm run build && npm run build:standalone",
+    "dev": "eleventy --serve --port=3000",
+    "build": "eleventy",
     "build:standalone": "node scripts/inline-build.mjs",
     "build:spa": "node scripts/inline-build.mjs --spa",
-    "clean": "rm -rf out out-standalone out-spa",
+    "build:inline": "npm run build:standalone && npm run build:spa",
+    "build:all": "npm run build && npm run build:inline",
+    "clean": "rm -rf out out-*",
+    "reset": "npm run clean && npm run build:all && npm run dev",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint src/assets/js/",
     "lint:css": "stylelint 'src/assets/css/**/*.css'",
