@@ -21,9 +21,11 @@ import { gzipSync } from 'zlib';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const OUT_DIR = join(ROOT, 'out');
+const SRC_DIR = join(ROOT, 'src');
 const STANDALONE_DIR = join(ROOT, 'out-standalone');
 const SPA_DIR = join(ROOT, 'out-spa');
 const SPA_MODE = process.argv.includes('--spa');
+const SKIP_FRESHNESS = process.argv.includes('--no-freshness-check');
 
 // -- Helpers ----------------------------------------------------------------
 
@@ -42,6 +44,68 @@ function findFiles(dir, ext, files = []) {
     }
   }
   return files;
+}
+
+/**
+ * Prerequisite + freshness guard.
+ *
+ * Fails loudly if `out/` is missing or empty — the downstream inline builds
+ * cannot run until 11ty has produced HTML. Also warns if any source file
+ * under `src/` has a newer mtime than `out/index.html`, which almost always
+ * means someone forgot to re-run `npm run build` after editing templates.
+ *
+ * The staleness check is advisory (warning, not error) so that fast iteration
+ * on inline-build.mjs itself doesn't constantly trip it. Pass
+ * --no-freshness-check to silence the warning entirely.
+ */
+function assertOutIsReady(label) {
+  if (!existsSync(OUT_DIR)) {
+    console.error(
+      `\n[${label}] /out does not exist.\n` +
+      `  Run "npm run build" first, or use "npm run build:all" to do both steps.\n`
+    );
+    process.exit(1);
+  }
+
+  const indexPath = join(OUT_DIR, 'index.html');
+  if (!existsSync(indexPath)) {
+    console.error(
+      `\n[${label}] /out exists but has no index.html.\n` +
+      `  11ty build appears incomplete. Re-run "npm run build".\n`
+    );
+    process.exit(1);
+  }
+
+  if (SKIP_FRESHNESS) return;
+
+  const outMtime = statSync(indexPath).mtimeMs;
+  let newestSrcMtime = 0;
+  let newestSrcFile = '';
+
+  function walk(dir) {
+    if (!existsSync(dir)) return;
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry);
+      const st = statSync(full);
+      if (st.isDirectory()) {
+        walk(full);
+      } else if (st.mtimeMs > newestSrcMtime) {
+        newestSrcMtime = st.mtimeMs;
+        newestSrcFile = relative(ROOT, full);
+      }
+    }
+  }
+  walk(SRC_DIR);
+
+  if (newestSrcMtime > outMtime) {
+    const lagSec = ((newestSrcMtime - outMtime) / 1000).toFixed(0);
+    console.warn(
+      `\n[${label}] /out/index.html is older than the newest source file.\n` +
+      `  Newest source: ${newestSrcFile} (${lagSec}s newer than /out)\n` +
+      `  /out may be stale. Run "npm run build" before "npm run build:inline"\n` +
+      `  (or use "npm run build:all" to do both). Proceeding anyway.\n`
+    );
+  }
 }
 
 function readFileOrEmpty(filePath) {
@@ -119,13 +183,22 @@ function copyDirSync(src, dest) {
 // -- Inline CSS/JS/Images ---------------------------------------------------
 
 function inlineCSS(html, htmlDir) {
+  // Match any <link ...> tag, then pick out rel/href from the attrs so the
+  // order doesn't matter (<link rel=".." href=".."> vs <link href=".." rel="..">).
   return html.replace(
-    /<link\s+[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*\/?>/gi,
-    (match, href) => {
+    /<link\s+([^>]*?)\/?>/gi,
+    (match, attrs) => {
+      if (!/\brel\s*=\s*["']stylesheet["']/i.test(attrs)) return match;
+      const hrefMatch = attrs.match(/\bhref\s*=\s*["']([^"']+)["']/i);
+      if (!hrefMatch) return match;
+      const href = hrefMatch[1];
       if (href.startsWith('http://') || href.startsWith('https://')) return match;
       const cssPath = href.startsWith('/') ? join(OUT_DIR, href) : join(htmlDir, href);
       const css = readFileOrEmpty(cssPath);
-      if (!css) return match;
+      if (!css) {
+        console.warn(`  [inline] missing CSS: ${href} (kept as external <link>)`);
+        return match;
+      }
       return `<style>/* inlined: ${href} */\n${css}\n</style>`;
     }
   );
@@ -138,7 +211,10 @@ function inlineJS(html, htmlDir) {
       if (src.startsWith('http://') || src.startsWith('https://')) return match;
       const jsPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
       const js = readFileOrEmpty(jsPath);
-      if (!js) return match;
+      if (!js) {
+        console.warn(`  [inline] missing JS: ${src} (kept as external <script>)`);
+        return match;
+      }
       return `<script>/* inlined: ${src} */\n${js}\n</script>`;
     }
   );
@@ -151,14 +227,21 @@ function inlineImages(html, htmlDir) {
       if (src.startsWith('http') || src.startsWith('data:')) return match;
       const imgPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
       const dataUri = fileToBase64DataUri(imgPath);
-      return dataUri ? `${pre}${dataUri}${post}` : match;
+      if (!dataUri) {
+        console.warn(`  [inline] missing image: ${src} (kept as external <img>)`);
+        return match;
+      }
+      return `${pre}${dataUri}${post}`;
     }
   );
 }
 
 function minifyHTML(html) {
   const parts = [];
-  const re = /(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>)/gi;
+  // Protect whitespace-sensitive regions. <pre> and <textarea> preserve
+  // literal whitespace per HTML spec; collapsing it silently corrupts
+  // code samples, comment drafts, etc.
+  const re = /(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>|<textarea[\s\S]*?<\/textarea>)/gi;
   let lastIndex = 0;
   let match;
   while ((match = re.exec(html)) !== null) {
@@ -189,6 +272,8 @@ function processFile(filePath) {
 // -- Standalone build -------------------------------------------------------
 
 function buildStandalone() {
+  assertOutIsReady('build:standalone');
+
   console.log('Building flat standalone pages -> /out-standalone/');
   ensureDir(STANDALONE_DIR);
 
@@ -231,6 +316,8 @@ function escapeAttr(str) {
 }
 
 function buildSPA() {
+  assertOutIsReady('build:spa');
+
   console.log('Building SPA -> /out-spa/app.html');
   ensureDir(SPA_DIR);
 
