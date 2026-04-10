@@ -85,5 +85,5 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  document.addEventListener('starter:page-loaded', init);
+  document.addEventListener('{{project-name}}:page-loaded', init);
 })();

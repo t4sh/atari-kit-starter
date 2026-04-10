@@ -147,6 +147,6 @@
 
   // -- Lifecycle hooks ------------------------------------------------------
   document.addEventListener('DOMContentLoaded', scan);
-  document.addEventListener('starter:page-loaded', scan);
-  document.addEventListener('starter:before-page-unload', cleanup);
+  document.addEventListener('{{project-name}}:page-loaded', scan);
+  document.addEventListener('{{project-name}}:before-page-unload', cleanup);
 })();

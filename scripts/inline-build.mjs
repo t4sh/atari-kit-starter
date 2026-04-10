@@ -10,7 +10,7 @@
  *   node scripts/inline-build.mjs               # standalone pages
  *   node scripts/inline-build.mjs --spa          # combined SPA
  *
- * Adapted from atarikit's inline-build.mjs for starter.
+ * Adapted from atari-kit's inline-build.mjs for starter.
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'fs';
@@ -425,15 +425,15 @@ ${shellAfterHash}
 
     if (!tpl) return;
 
-    document.dispatchEvent(new CustomEvent('starter:before-page-unload'));
+    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
 
     var main = document.getElementById('main-content');
     main.innerHTML = tpl.innerHTML;
 
-    document.title = tpl.getAttribute('data-title') || 'starter';
+    document.title = tpl.getAttribute('data-title') || '{{project-name}}';
     window.scrollTo(0, 0);
 
-    document.dispatchEvent(new CustomEvent('starter:page-loaded'));
+    document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
 
     // Re-init Lucide icons
     if (typeof lucide !== 'undefined' && lucide.createIcons) {

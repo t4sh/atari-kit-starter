@@ -2,8 +2,8 @@
  * view-transitions.js — Page transition orchestration.
  *
  * - Wraps same-origin navigation in View Transitions API when supported
- * - Fires starter:before-page-unload before leaving
- * - Fires starter:page-loaded after new content is in place
+ * - Fires {{project-name}}:before-page-unload before leaving
+ * - Fires {{project-name}}:page-loaded after new content is in place
  * - Graceful fallback: just navigates normally if API unavailable
  */
 
@@ -37,7 +37,7 @@
     e.preventDefault();
 
     // Dispatch cleanup event
-    document.dispatchEvent(new CustomEvent('starter:before-page-unload'));
+    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
 
     if (reducedMotion.matches) {
       // Skip animation, just navigate
@@ -66,14 +66,14 @@
           history.pushState(null, '', url.href);
 
           // Re-init modules
-          document.dispatchEvent(new CustomEvent('starter:page-loaded'));
+          document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
         });
     });
   });
 
   // Handle back/forward navigation
   window.addEventListener('popstate', function () {
-    document.dispatchEvent(new CustomEvent('starter:before-page-unload'));
+    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
 
     fetch(window.location.href)
       .then(function (res) { return res.text(); })
@@ -88,7 +88,7 @@
         }
 
         document.title = doc.title;
-        document.dispatchEvent(new CustomEvent('starter:page-loaded'));
+        document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
       });
   });
 })();

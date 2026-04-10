@@ -47,10 +47,13 @@ done
 echo "    Done."
 
 # ── 2. Rename lifecycle events ──
+# JS modules and inline-build.mjs use '{{project-name}}:page-loaded' /
+# '{{project-name}}:before-page-unload' as placeholder CustomEvent names.
+# Rewrite the token to the project slug so listeners and dispatchers match.
 echo "  Renaming lifecycle events..."
 for f in src/assets/js/*.js scripts/inline-build.mjs; do
   if [ -f "$f" ]; then
-    sed -i '' "s/starter:/${project_slug}:/g" "$f"
+    sed -i '' "s/{{project-name}}/${project_slug}/g" "$f"
   fi
 done
 echo "    Done."

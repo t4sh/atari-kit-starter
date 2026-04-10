@@ -55,7 +55,7 @@
 5. **4-file CSS.** tokens → base (@layer base) → components → utilities.
 6. **oklch() colors.** Dark mode via `html.dark` in tokens.css.
 7. **Motion-aware.** `prefers-reduced-motion` everywhere. Single IntersectionObserver.
-8. **View Transitions API.** Lifecycle: `starter:page-loaded`, `starter:before-page-unload`.
+8. **View Transitions API.** Lifecycle: `{{project-name}}:page-loaded`, `{{project-name}}:before-page-unload` (the `{{project-name}}` token is rewritten by `setup.sh` to the kebab-case slug of the project).
 9. **No bundler.** Vanilla ES6 IIFE, `<script defer>`.
 
 ## Commands

@@ -3,7 +3,7 @@
  *
  * Calls lucide.createIcons() on:
  * - DOMContentLoaded
- * - starter:page-loaded (after View Transition)
+ * - {{project-name}}:page-loaded (after View Transition)
  * - site-theme-change (icons may swap in dark mode)
  */
 
@@ -17,6 +17,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', render);
-  document.addEventListener('starter:page-loaded', render);
+  document.addEventListener('{{project-name}}:page-loaded', render);
   document.addEventListener('site-theme-change', render);
 })();

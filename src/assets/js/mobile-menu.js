@@ -5,7 +5,7 @@
  * - Manages aria-expanded on toggle button
  * - Traps focus within menu when open
  * - Closes on Escape key
- * - Cleans up on starter:before-page-unload
+ * - Cleans up on {{project-name}}:before-page-unload
  */
 
 (function () {
@@ -63,6 +63,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  document.addEventListener('starter:page-loaded', init);
-  document.addEventListener('starter:before-page-unload', cleanup);
+  document.addEventListener('{{project-name}}:page-loaded', init);
+  document.addEventListener('{{project-name}}:before-page-unload', cleanup);
 })();
