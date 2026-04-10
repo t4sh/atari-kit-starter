@@ -11,8 +11,8 @@
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     box-shadow: var(--shadow-1);
-    transition: box-shadow var(--duration-normal) var(--easing-standard),
-                transform var(--duration-normal) var(--easing-standard);
+    transition: box-shadow var(--duration-normal) var(--ease-standard),
+                transform var(--duration-normal) var(--ease-standard);
   }
 
   .card:hover {
@@ -53,9 +53,9 @@
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background var(--duration-fast) var(--easing-standard),
-                box-shadow var(--duration-fast) var(--easing-standard),
-                transform var(--duration-fast) var(--easing-standard);
+    transition: background var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard),
+                transform var(--duration-fast) var(--ease-standard);
     text-decoration: none;
   }
 
@@ -129,7 +129,7 @@
     border: 1px solid var(--outline-variant);
     background: var(--surface-container);
     color: var(--on-surface-variant);
-    transition: background var(--duration-fast) var(--easing-standard);
+    transition: background var(--duration-fast) var(--ease-standard);
   }
 
   .chip--filled {
@@ -147,8 +147,8 @@
   [data-observe~="reveal"],
   [data-observe~="reveal-up"] {
     opacity: 0;
-    transition: opacity var(--duration-slow) var(--easing-decelerate),
-                transform var(--duration-slow) var(--easing-decelerate);
+    transition: opacity var(--duration-slow) var(--ease-decelerate),
+                transform var(--duration-slow) var(--ease-decelerate);
   }
 
   [data-observe="reveal-up"],

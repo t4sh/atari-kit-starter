@@ -40,17 +40,47 @@
     />
 
     {# -- Tailwind v4 Browser Build ------------------------------------------ #}
+    {#
+      IMPORTANT: @theme values are evaluated by the TW4 JIT at parse time,
+      before tokens.css (loaded via <link> below) is available. That means
+      var(--token) refs here CANNOT resolve and will break utility generation
+      for any non-color namespace. Rule of thumb:
+
+        - Fonts, type scale, spacing base, radii, shadows → literal values
+        - Color tokens → var(--token) is fine (Tailwind emits
+          `.bg-primary { background: var(--primary) }`, which resolves at
+          render time, not JIT time)
+
+      Keep light-mode values here; dark-mode overrides live in tokens.css via
+      the `html.dark` cascade and apply at runtime.
+    #}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
       @layer base, components, utilities;
 
       @theme {
-        /* -- Fonts -- */
-        --font-sans: var(--font-sans);
-        --font-heading: var(--font-heading);
-        --font-body: var(--font-body);
-        --font-mono: var(--font-mono);
-        --font-serif: var(--font-serif);
+        /* -- Fonts (literals matching tokens.css) -- */
+        --font-sans:    'Space Grotesk', sans-serif;
+        --font-heading: 'Inter Tight', sans-serif;
+        --font-body:    'Hubot Sans', 'Inter Tight', sans-serif;
+        --font-mono:    'JetBrains Mono', monospace;
+        --font-serif:   'Instrument Serif', Georgia, serif;
+
+        /* -- Type scale (drives text-xs/sm/base/lg/xl/...) -- */
+        --text-xs:   0.75rem;
+        --text-sm:   0.875rem;
+        --text-base: 1rem;
+        --text-lg:   1.125rem;
+        --text-xl:   1.25rem;
+        --text-2xl:  1.5rem;
+        --text-3xl:  1.875rem;
+        --text-4xl:  2.25rem;
+        --text-5xl:  3rem;
+
+        /* -- Spacing base (drives p-*/m-*/gap-* via TW4 calc multiplier).
+           tokens.css --space-N values are exact 0.25rem multiples, so
+           `p-5` === `var(--space-5)` === 1.25rem. */
+        --spacing: 0.25rem;
 
         /* -- Surface system -- */
         --color-surface: var(--surface);
@@ -79,20 +109,30 @@
         --color-outline: var(--outline);
         --color-outline-variant: var(--outline-variant);
 
-        /* -- Shadows -- */
-        --shadow-1: var(--shadow-1);
-        --shadow-2: var(--shadow-2);
-        --shadow-3: var(--shadow-3);
-        --shadow-4: var(--shadow-4);
-        --shadow-5: var(--shadow-5);
+        /* -- Shadows (numeric 1..5 is the project convention;
+           dark-mode values in tokens.css via html.dark cascade) -- */
+        --shadow-1: 0 1px 3px 1px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.10);
+        --shadow-2: 0 2px 6px 2px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.10);
+        --shadow-3: 0 4px 8px 3px oklch(0 0 0 / 0.08), 0 1px 3px oklch(0 0 0 / 0.10);
+        --shadow-4: 0 6px 10px 4px oklch(0 0 0 / 0.08), 0 2px 3px oklch(0 0 0 / 0.10);
+        --shadow-5: 0 8px 12px 6px oklch(0 0 0 / 0.08), 0 4px 4px oklch(0 0 0 / 0.10);
 
         /* -- Radii -- */
-        --radius-xs: var(--radius-xs);
-        --radius-sm: var(--radius-sm);
-        --radius-md: var(--radius-md);
-        --radius-lg: var(--radius-lg);
-        --radius-xl: var(--radius-xl);
-        --radius-full: var(--radius-full);
+        --radius-xs:   0.25rem;
+        --radius-sm:   0.5rem;
+        --radius-md:   0.75rem;
+        --radius-lg:   1rem;
+        --radius-xl:   1.5rem;
+        --radius-full: 9999px;
+
+        /* -- Motion / duration (drives duration-* / ease-* utilities) -- */
+        --duration-fast:   150ms;
+        --duration-normal: 250ms;
+        --duration-slow:   400ms;
+        --duration-slower: 600ms;
+        --ease-standard:   cubic-bezier(0.2, 0, 0, 1);
+        --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+        --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
       }
     </style>
 
