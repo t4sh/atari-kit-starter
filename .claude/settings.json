@@ -9,7 +9,8 @@
       "Bash(@11ty/eleventy *)",
       "Bash(bash .agent-memory/bootstrap.sh *)",
       "WebFetch(domain:skills.sh)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//Users/ash/Projects/GenAI/linkedIn-01/**)"
     ]
   }
 }
