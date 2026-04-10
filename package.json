@@ -4,7 +4,7 @@
   "description": "{{PROJECT_NAME}} — HTML prototype with 11ty, Tailwind v4, and design-system-agnostic tokens",
   "private": true,
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "eleventy --serve --port=3000",
