@@ -1,13 +1,15 @@
 {
-  "$schema": "https://code.claude.com/schema/settings.json",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Read",
       "Glob",
       "Grep",
       "Bash(npm run *)",
-      "Bash(npx @11ty/eleventy *)",
-      "Bash(bash .agent-memory/bootstrap.sh *)"
+      "Bash(@11ty/eleventy *)",
+      "Bash(bash .agent-memory/bootstrap.sh *)",
+      "WebFetch(domain:skills.sh)",
+      "WebSearch"
     ]
   }
 }
