@@ -4,10 +4,9 @@ This project includes AI agent skills that enhance your workflow across Claude C
 
 ## Included Skills
 
-| Skill | Purpose |
-|-------|---------|
-| **agent-memory** | Cross-interface persistent memory system (`.agent-memory/`) |
-| **localhost-screenshots** | Capture and compare localhost screenshots |
+| Skill                     | Purpose                                     |
+| ------------------------- | ------------------------------------------- |
+| **localhost-screenshots** | Capture and compare localhost screenshots   |
 
 ## Setup for Your Machine
 
@@ -19,19 +18,18 @@ mkdir -p ~/.agents/skills
 cp -r .agents/skills/* ~/.agents/skills/
 ```
 
-### Checking for updates
-
-If your global copy is newer than the bundled version, the global takes precedence. To check versions:
-
-```bash
-# Compare agent-memory versions
-grep 'version:' .agents/skills/agent-memory/SKILL.md
-grep 'version:' ~/.agents/skills/agent-memory/SKILL.md
-```
-
 ### How skills work
 
 - AI agents look for skills in: project `.agents/skills/` → global `~/.agents/skills/`
 - Each skill has a `SKILL.md` with instructions the agent reads before executing
-- Skills are invoked by mentioning them: `[skill:agent-memory]`
-- The `agent-memory` skill also includes `bootstrap.sh` for CLI operations
+- Skills are invoked by mentioning them: `[skill:localhost-screenshots]`
+
+## Optional — external skills
+
+Cross-session persistent memory lives in the separate **`agent-memory`** skill, installed via the [skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add t4sh/skills4sh --skill agent-memory
+```
+
+Details: https://skills.sh/t4sh/skills4sh/agent-memory

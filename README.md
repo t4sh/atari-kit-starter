@@ -19,7 +19,7 @@ Open [localhost:3000](http://localhost:3000) to see your project.
 - **Motion-aware** — `prefers-reduced-motion` respected everywhere, single IntersectionObserver
 - **View Transitions API** — smooth page transitions with graceful fallback
 - **Dark mode** — flash-free toggle with localStorage persistence
-- **AI-ready** — AGENTS.md, agent memory, bundled skills for Claude/Cursor
+- **AI-ready** — AGENTS.md + bundled skills for Claude/Cursor. Optional cross-session memory via the [`agent-memory` skill](https://skills.sh/t4sh/skills4sh/agent-memory).
 
 ## Adding Pages
 

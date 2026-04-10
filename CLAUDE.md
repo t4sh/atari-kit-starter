@@ -2,11 +2,13 @@
 
 **Read `AGENTS.md` first.** It contains the complete project context, structure, rules, and conventions shared across all AI tools.
 
-## Memory System
+## Memory System *(optional)*
 
-This project uses `.agent-memory/` for cross-interface persistent memory.
-Before starting work, read `.agent-memory/index.yaml` and load relevant memories.
-After significant work, save learnings with source: `claude-code` (CLI) or `claude-app` (Claude App).
+Cross-session persistent memory is handled by the external `agent-memory` skill.
+Install with: `npx skills add t4sh/skills4sh --skill agent-memory`
+Details: https://skills.sh/t4sh/skills4sh/agent-memory
+
+If the skill is installed, follow its own instructions for reading and writing memory.
 
 ## Claude-Specific Notes
 

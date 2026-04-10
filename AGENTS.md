@@ -6,11 +6,11 @@
 ## First Steps
 
 1. Read this file completely.
-2. Read `.agent-memory/index.yaml` to discover available project context.
-3. Load relevant memory files based on the current task.
-4. Update or create memories when you learn something future sessions should know.
-
-See `.agent-memory/README.md` for the full memory spec.
+2. *(Optional)* If the `agent-memory` skill is installed for this project, follow its instructions for cross-session persistent memory. Install with:
+   ```bash
+   npx skills add t4sh/skills4sh --skill agent-memory
+   ```
+   Details: https://skills.sh/t4sh/skills4sh/agent-memory
 
 ## Tech Stack
 
@@ -33,7 +33,6 @@ See `.agent-memory/README.md` for the full memory spec.
 ├── CLAUDE.md                 # Claude-specific → "read AGENTS.md first"
 ├── .claude/                  # Claude Code native settings
 ├── .cursor/rules/            # Cursor native rules
-├── .agent-memory/            # Cross-interface persistent memory
 ├── .agents/skills/           # Bundled AI agent skills
 ├── source-reference/         # DROP ZONE: raw HTML/React source pages
 ├── scripts/inline-build.mjs  # Standalone + SPA builder
