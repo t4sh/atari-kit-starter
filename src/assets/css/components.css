@@ -138,8 +138,162 @@
     border-color: transparent;
   }
 
-  .chip--sm { font-size: 0.625rem; padding: 2px var(--space-2); }
+  .chip--sm { font-size: var(--text-2xs); padding: var(--space-1) var(--space-2); }
   .chip--lg { font-size: var(--text-sm); padding: var(--space-2) var(--space-4); }
+
+  .chip--interactive {
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard),
+                border-color var(--duration-fast) var(--ease-standard);
+  }
+  .chip--interactive:hover {
+    background: var(--surface-container-high);
+  }
+
+  .chip--selected {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+  }
+
+  /* -- Avatar --------------------------------------------------------------- */
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--size-avatar-lg);
+    height: var(--size-avatar-lg);
+    border-radius: var(--radius-full);
+    background: var(--surface-container-high);
+    overflow: hidden;
+    color: var(--on-surface-variant);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+
+  .avatar > img,
+  .avatar > svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Sizes */
+  .avatar--xs  { width: var(--size-avatar-xs);  height: var(--size-avatar-xs);  font-size: var(--text-2xs); }
+  .avatar--sm  { width: var(--size-avatar-sm);  height: var(--size-avatar-sm);  font-size: var(--text-xs); }
+  .avatar--md  { width: var(--size-avatar-md);  height: var(--size-avatar-md);  font-size: var(--text-xs); }
+  .avatar--lg  { width: var(--size-avatar-lg);  height: var(--size-avatar-lg);  font-size: var(--text-sm); }
+  .avatar--xl  { width: var(--size-avatar-xl);  height: var(--size-avatar-xl);  font-size: var(--text-base); }
+  .avatar--2xl { width: var(--size-avatar-2xl); height: var(--size-avatar-2xl); font-size: var(--text-lg); }
+  .avatar--3xl { width: var(--size-avatar-3xl); height: var(--size-avatar-3xl); font-size: var(--text-3xl); }
+
+  /* Shape variants */
+  .avatar--square {
+    border-radius: var(--radius-sm);
+    background: var(--surface-container-low);
+  }
+
+  .avatar--square > img,
+  .avatar--square > svg {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+  }
+
+  /* Decorative border (e.g. profile photo over a banner) */
+  .avatar--bordered {
+    border: 3px solid var(--surface);
+    box-sizing: content-box;
+  }
+
+  /* -- Form field ----------------------------------------------------------- */
+  .form-field {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-md);
+    color: var(--on-surface);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    transition: border-color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  .form-field:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 20%, transparent);
+  }
+
+  .form-field > input,
+  .form-field > textarea {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .form-field > input:focus-visible,
+  .form-field > textarea:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+
+  .form-field--filled {
+    background: var(--surface-container-low);
+    border-color: transparent;
+  }
+
+  .form-field--pill {
+    border-radius: var(--radius-full);
+  }
+
+  /* -- Badge (status pills) ------------------------------------------------- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-2xs);
+    line-height: 1;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+  }
+
+  .badge--success {
+    background: color-mix(in oklch, oklch(0.65 0.15 150) 18%, var(--surface));
+    color: oklch(0.35 0.12 150);
+  }
+
+  .badge--warning {
+    background: color-mix(in oklch, oklch(0.80 0.14 85) 22%, var(--surface));
+    color: oklch(0.40 0.12 85);
+  }
+
+  .badge--info {
+    background: var(--primary-container);
+    color: var(--primary);
+  }
+
+  .badge--error {
+    background: color-mix(in oklch, var(--error) 18%, var(--surface));
+    color: var(--error);
+  }
+
+  html.dark .badge--success { color: oklch(0.88 0.12 150); }
+  html.dark .badge--warning { color: oklch(0.88 0.12 85); }
+  html.dark .badge--error   { color: oklch(0.88 0.12 25); }
 
   /* -- Observe: reveal animation base states -------------------------------- */
   [data-observe="reveal"],

@@ -6,6 +6,7 @@
    Single source of truth for:
      - Color roles (surface, primary, error, outline...)
      - Spacing scale (--space-1..24)
+     - Component sizing (--size-icon-*, --size-avatar-*)
      - Dark-mode overrides (html.dark block)
 
    Fonts, type scale, radii, shadows, and motion tokens live in the @theme
@@ -41,6 +42,24 @@
   /* == Outline / divider =================================================== */
   --outline:          oklch(0.75 0 0);
   --outline-variant:  oklch(0.85 0 0);
+
+  /* == Sizing — fixed-size components (avatars, icons) =====================
+     Separate from --space-* spacing scale: these size component *primitives*,
+     not layout gaps. Not in any Tailwind 4 namespace — referenced only from
+     component classes in components.css via var(). */
+  --size-icon-xs:    0.75rem;   /* 12px — inline text icons */
+  --size-icon-sm:    1rem;      /* 16px — compact UI icons */
+  --size-icon-md:    1.125rem;  /* 18px — button icons */
+  --size-icon-lg:    1.25rem;   /* 20px — primary nav icons */
+  --size-icon-xl:    2rem;      /* 32px — feature icons */
+
+  --size-avatar-xs:  2rem;      /* 32px — dense lists */
+  --size-avatar-sm:  2.5rem;    /* 40px — right rail, compact */
+  --size-avatar-md:  2.75rem;   /* 44px — message threads */
+  --size-avatar-lg:  3rem;      /* 48px — feed posts, default */
+  --size-avatar-xl:  3.5rem;    /* 56px — profile cards */
+  --size-avatar-2xl: 4rem;      /* 64px — grid cards */
+  --size-avatar-3xl: 9rem;      /* 144px — profile page intro */
 
   /* == Spacing scale =======================================================
      Full 0.25rem-step scale 1..24. Matches Tailwind 4's spacing multiplier
