@@ -1,5 +1,8 @@
 {# Footer — Standard (footer-01) #}
-<footer class="section--sm" style="background: var(--surface-container-low); border-top: 1px solid var(--outline-variant);">
+<footer
+  class="section--sm"
+  style="background: var(--surface-container-low); border-top: 1px solid var(--outline-variant);"
+>
   <div class="container flex-between" style="flex-wrap: wrap; gap: var(--space-4);">
     <p style="font-size: var(--text-sm); color: var(--on-surface-variant);">
       &copy; {% year %} {{ site.name or "aduxion" }}. All rights reserved.
@@ -8,7 +11,10 @@
       <ul class="flex items-center gap-4 list-none" style="font-size: var(--text-sm);">
         {% for item in nav.items %}
           <li>
-            <a href="{{ item.url }}" style="color: var(--on-surface-variant); text-decoration: none;">
+            <a
+              href="{{ item.url }}"
+              style="color: var(--on-surface-variant); text-decoration: none;"
+            >
               {{ item.label }}
             </a>
           </li>

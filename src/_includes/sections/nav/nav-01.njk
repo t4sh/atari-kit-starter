@@ -1,18 +1,30 @@
 {# Navigation — Top bar (nav-01) #}
-<header class="sticky top-0 z-50" style="background: var(--surface); border-bottom: 1px solid var(--outline-variant);">
+<header
+  class="sticky top-0 z-50"
+  style="background: var(--surface); border-bottom: 1px solid var(--outline-variant);"
+>
   <nav class="container flex-between" style="height: 4rem;" aria-label="Main navigation">
-
     {# -- Logo / Brand ----------------------------------------------------- #}
-    <a href="/" class="flex items-center gap-2 no-underline" style="font-family: var(--font-heading); font-weight: 700; font-size: var(--text-xl); color: var(--on-surface);">
+    <a
+      href="/"
+      class="flex items-center gap-2 no-underline"
+      style="font-family: var(--font-heading); font-weight: 700; font-size: var(--text-xl); color: var(--on-surface);"
+    >
       <span aria-hidden="true">&#9670;</span>
       {{ site.name or "aduxion" }}
     </a>
 
     {# -- Desktop links ---------------------------------------------------- #}
-    <ul class="hidden md:flex items-center gap-6 list-none" style="font-family: var(--font-sans); font-size: var(--text-sm);">
+    <ul
+      class="hidden md:flex items-center gap-6 list-none"
+      style="font-family: var(--font-sans); font-size: var(--text-sm);"
+    >
       {% for item in nav.items %}
         <li>
-          <a href="{{ item.url }}" style="color: var(--on-surface-variant); text-decoration: none; transition: color 150ms;">
+          <a
+            href="{{ item.url }}"
+            style="color: var(--on-surface-variant); text-decoration: none; transition: color 150ms;"
+          >
             {{ item.label }}
           </a>
         </li>

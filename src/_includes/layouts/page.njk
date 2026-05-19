@@ -7,9 +7,7 @@ layout: layouts/base.njk
 {% include navFile %}
 
 {# -- Main content --------------------------------------------------------- #}
-<main id="main-content">
-  {{ content | safe }}
-</main>
+<main id="main-content">{{ content | safe }}</main>
 
 {# -- Footer --------------------------------------------------------------- #}
 {% set footerFile = "sections/footer/" + (footerVariant or "footer-01") + ".njk" %}
