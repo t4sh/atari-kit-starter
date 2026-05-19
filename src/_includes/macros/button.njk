@@ -4,6 +4,9 @@
     {% from "macros/button.njk" import button %}
     {{ button("Click me", { variant: "primary", size: "lg", href: "/page/" }) }}
     {{ button("Delete", { variant: "destructive", icon: "trash-2" }) }}
+    {{ button("Menu",   { iconOnly: true, icon: "menu",
+                          attrs: { "aria-controls": "mobile-menu",
+                                   "aria-expanded": "false" } }) }}
 
   Options:
     variant  — primary (default), secondary, outline, ghost, destructive
@@ -11,8 +14,20 @@
     href     — if set, renders <a> instead of <button>
     icon     — Lucide icon name (renders before label)
     iconOnly — if true, uses icon size and hides label visually
-    attrs    — extra HTML attributes string
+    attrs    — extra HTML attributes as a key/value object,
+               e.g. { "aria-controls": "menu" }. Values are escaped via
+               Nunjucks' `escape` filter; keep keys to known HTML
+               attribute names.
 #}
+
+{# Build extra-attrs string. Inside this macro autoescape applies to {{ k }}
+   and {{ v }}, so values are safely escaped. The outer `| safe` only
+   re-emits the structurally-known ` key="value"` separator pattern. #}
+{% macro _attrs(attrs) -%}
+  {%- for k, v in (attrs or {}) -%}
+    {{ " " }}{{ k }}="{{ v }}"
+  {%- endfor -%}
+{% endmacro %}
 
 {% macro button(label, opts) %}
   {%- set variant = opts.variant or "primary" -%}
@@ -20,14 +35,13 @@
   {%- set href = opts.href or "" -%}
   {%- set icon = opts.icon or "" -%}
   {%- set iconOnly = opts.iconOnly or false -%}
-  {%- set attrs = opts.attrs or "" -%}
 
   {%- set classes = "btn btn--" + variant -%}
   {%- if size %}{%- set classes = classes + " btn--" + size -%}{% endif -%}
   {%- if iconOnly %}{%- set classes = classes + " btn--icon" -%}{% endif -%}
 
   {%- if href -%}
-    <a href="{{ href }}" class="{{ classes }}" {{ attrs | safe }}>
+    <a href="{{ href }}" class="{{ classes }}" {{- _attrs(opts.attrs) | safe -}}>
       {%- if icon %}<i data-lucide="{{ icon }}" style="width:1em;height:1em;"></i>{% endif -%}
       {%- if not iconOnly %}
         {{ label }}
@@ -36,7 +50,7 @@
       {% endif -%}
     </a>
   {%- else -%}
-    <button class="{{ classes }}" {{ attrs | safe }}>
+    <button class="{{ classes }}" {{- _attrs(opts.attrs) | safe -}}>
       {%- if icon %}<i data-lucide="{{ icon }}" style="width:1em;height:1em;"></i>{% endif -%}
       {%- if not iconOnly %}
         {{ label }}
