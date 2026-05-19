@@ -12,11 +12,15 @@
   }
 
   @media (min-width: 640px) {
-    .container { padding-inline: var(--space-6); }
+    .container {
+      padding-inline: var(--space-6);
+    }
   }
 
   @media (min-width: 1024px) {
-    .container { padding-inline: var(--space-8); }
+    .container {
+      padding-inline: var(--space-8);
+    }
   }
 
   .container--narrow {
@@ -66,13 +70,13 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border-width: 0;
   }
 
   /* -- Stagger animation delay for children --------------------------------- */
-  [data-observe~="stagger"] > * {
+  [data-observe~='stagger'] > * {
     transition-delay: calc(var(--stagger-index, 0) * 80ms);
   }
 }
