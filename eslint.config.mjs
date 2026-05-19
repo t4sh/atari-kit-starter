@@ -24,6 +24,7 @@ export default [
       sourceType: 'script',
       globals: {
         ...globals.browser,
+        lucide: 'readonly',
       },
     },
     rules: {
