@@ -13,14 +13,14 @@
   // Only enhance if View Transitions API is available
   if (!document.startViewTransition) return;
 
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   // Intercept clicks on same-origin anchor links
   document.addEventListener('click', function (e) {
-    var link = e.target.closest('a[href]');
+    const link = e.target.closest('a[href]');
     if (!link) return;
 
-    var url;
+    let url;
     try {
       url = new URL(link.href, window.location.origin);
     } catch (_err) {
@@ -47,14 +47,16 @@
 
     document.startViewTransition(function () {
       return fetch(url.href)
-        .then(function (res) { return res.text(); })
+        .then(function (res) {
+          return res.text();
+        })
         .then(function (html) {
-          var parser = new DOMParser();
-          var doc = parser.parseFromString(html, 'text/html');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
 
           // Swap main content
-          var newMain = doc.querySelector('#main-content');
-          var currentMain = document.querySelector('#main-content');
+          const newMain = doc.querySelector('#main-content');
+          const currentMain = document.querySelector('#main-content');
           if (newMain && currentMain) {
             currentMain.innerHTML = newMain.innerHTML;
           }
@@ -76,13 +78,15 @@
     document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
 
     fetch(window.location.href)
-      .then(function (res) { return res.text(); })
+      .then(function (res) {
+        return res.text();
+      })
       .then(function (html) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, 'text/html');
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
 
-        var newMain = doc.querySelector('#main-content');
-        var currentMain = document.querySelector('#main-content');
+        const newMain = doc.querySelector('#main-content');
+        const currentMain = document.querySelector('#main-content');
         if (newMain && currentMain) {
           currentMain.innerHTML = newMain.innerHTML;
         }

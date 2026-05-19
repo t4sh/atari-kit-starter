@@ -11,9 +11,9 @@
 (function () {
   'use strict';
 
-  var btn = null;
-  var menu = null;
-  var isOpen = false;
+  let btn = null;
+  let menu = null;
+  let isOpen = false;
 
   function open() {
     if (!menu || !btn) return;
@@ -22,7 +22,7 @@
     btn.setAttribute('aria-expanded', 'true');
 
     // Focus first link
-    var firstLink = menu.querySelector('a');
+    const firstLink = menu.querySelector('a');
     if (firstLink) firstLink.focus();
   }
 
