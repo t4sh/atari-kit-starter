@@ -35,19 +35,36 @@
   }
 
   /* -- Typography ----------------------------------------------------------- */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.2;
     color: var(--on-surface);
   }
 
-  h1 { font-size: var(--text-5xl); }
-  h2 { font-size: var(--text-4xl); }
-  h3 { font-size: var(--text-3xl); }
-  h4 { font-size: var(--text-2xl); }
-  h5 { font-size: var(--text-xl); }
-  h6 { font-size: var(--text-lg); }
+  h1 {
+    font-size: var(--text-5xl);
+  }
+  h2 {
+    font-size: var(--text-4xl);
+  }
+  h3 {
+    font-size: var(--text-3xl);
+  }
+  h4 {
+    font-size: var(--text-2xl);
+  }
+  h5 {
+    font-size: var(--text-xl);
+  }
+  h6 {
+    font-size: var(--text-lg);
+  }
 
   p {
     margin-bottom: var(--space-4);
@@ -63,7 +80,10 @@
     text-decoration: underline;
   }
 
-  code, pre, kbd, samp {
+  code,
+  pre,
+  kbd,
+  samp {
     font-family: var(--font-mono);
     font-size: 0.9em;
   }
@@ -75,14 +95,19 @@
     background: var(--surface-container);
   }
 
-  img, svg, video {
+  img,
+  svg,
+  video {
     display: block;
     max-width: 100%;
     height: auto;
   }
 
   /* -- Form defaults -------------------------------------------------------- */
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     font: inherit;
     color: inherit;
   }

@@ -17,8 +17,8 @@
   'use strict';
 
   // -- Reduced motion check (live) ------------------------------------------
-  var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var prefersReducedMotion = motionQuery.matches;
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let prefersReducedMotion = motionQuery.matches;
 
   motionQuery.addEventListener('change', function (e) {
     prefersReducedMotion = e.matches;
@@ -27,11 +27,11 @@
   });
 
   // -- State ----------------------------------------------------------------
-  var observed = new Set();
-  var observer = null;
+  const observed = new Set();
+  let observer = null;
 
   // -- Effect handlers ------------------------------------------------------
-  var effects = {
+  const effects = {
     reveal: function (el) {
       el.classList.add('observed');
     },
@@ -41,7 +41,7 @@
     },
 
     lazy: function (el) {
-      var src = el.getAttribute('data-src');
+      const src = el.getAttribute('data-src');
       if (src) {
         el.src = src;
         el.removeAttribute('data-src');
@@ -49,7 +49,7 @@
     },
 
     countup: function (el) {
-      var target = parseInt(el.getAttribute('data-to'), 10) || 0;
+      const target = parseInt(el.getAttribute('data-to'), 10) || 0;
       if (prefersReducedMotion) {
         el.textContent = target.toLocaleString();
         return;
@@ -58,8 +58,8 @@
     },
 
     stagger: function (el) {
-      var children = el.children;
-      for (var i = 0; i < children.length; i++) {
+      const children = el.children;
+      for (let i = 0; i < children.length; i++) {
         children[i].style.setProperty('--stagger-index', i);
       }
       el.classList.add('observed');
@@ -68,13 +68,13 @@
 
   // -- Count-up animation ---------------------------------------------------
   function animateCountUp(el, target) {
-    var duration = 1200;
-    var start = performance.now();
+    const duration = 1200;
+    const start = performance.now();
 
     function tick(now) {
-      var progress = Math.min((now - start) / duration, 1);
+      const progress = Math.min((now - start) / duration, 1);
       // Ease out cubic
-      var eased = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - Math.pow(1 - progress, 3);
       el.textContent = Math.round(target * eased).toLocaleString();
       if (progress < 1) requestAnimationFrame(tick);
     }
@@ -85,7 +85,7 @@
   // -- Reveal all (for reduced motion) --------------------------------------
   function revealAll() {
     observed.forEach(function (el) {
-      var types = (el.getAttribute('data-observe') || '').split(/\s+/);
+      const types = (el.getAttribute('data-observe') || '').split(/\s+/);
       types.forEach(function (type) {
         if (effects[type]) effects[type](el);
       });
@@ -97,8 +97,8 @@
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
 
-      var el = entry.target;
-      var types = (el.getAttribute('data-observe') || '').split(/\s+/);
+      const el = entry.target;
+      const types = (el.getAttribute('data-observe') || '').split(/\s+/);
 
       types.forEach(function (type) {
         if (effects[type]) effects[type](el);
@@ -119,13 +119,13 @@
       });
     }
 
-    var elements = document.querySelectorAll('[data-observe]');
+    const elements = document.querySelectorAll('[data-observe]');
     elements.forEach(function (el) {
       if (observed.has(el)) return;
 
       // Reduced motion: resolve immediately
       if (prefersReducedMotion) {
-        var types = (el.getAttribute('data-observe') || '').split(/\s+/);
+        const types = (el.getAttribute('data-observe') || '').split(/\s+/);
         types.forEach(function (type) {
           if (effects[type]) effects[type](el);
         });

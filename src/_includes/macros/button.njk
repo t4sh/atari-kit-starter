@@ -29,12 +29,20 @@
   {%- if href -%}
     <a href="{{ href }}" class="{{ classes }}" {{ attrs | safe }}>
       {%- if icon %}<i data-lucide="{{ icon }}" style="width:1em;height:1em;"></i>{% endif -%}
-      {%- if not iconOnly %}{{ label }}{% else %}<span class="sr-only">{{ label }}</span>{% endif -%}
+      {%- if not iconOnly %}
+        {{ label }}
+      {% else %}
+        <span class="sr-only">{{ label }}</span>
+      {% endif -%}
     </a>
   {%- else -%}
     <button class="{{ classes }}" {{ attrs | safe }}>
       {%- if icon %}<i data-lucide="{{ icon }}" style="width:1em;height:1em;"></i>{% endif -%}
-      {%- if not iconOnly %}{{ label }}{% else %}<span class="sr-only">{{ label }}</span>{% endif -%}
+      {%- if not iconOnly %}
+        {{ label }}
+      {% else %}
+        <span class="sr-only">{{ label }}</span>
+      {% endif -%}
     </button>
   {%- endif -%}
 {% endmacro %}
