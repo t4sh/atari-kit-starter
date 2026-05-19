@@ -1,4 +1,5 @@
 {# Navigation — Top bar (nav-01) #}
+{%- set here = page.url | normalize_path -%}
 <header
   class="sticky top-0 z-50"
   style="background: var(--surface); border-bottom: 1px solid var(--outline-variant);"
@@ -20,9 +21,11 @@
       style="font-family: var(--font-sans); font-size: var(--text-sm);"
     >
       {% for item in nav.items %}
+        {%- set isActive = (item.url | normalize_path) == here -%}
         <li>
           <a
             href="{{ item.url }}"
+            {% if isActive %}aria-current="page"{% endif %}
             style="color: var(--on-surface-variant); text-decoration: none; transition: color 150ms;"
           >
             {{ item.label }}
@@ -66,9 +69,11 @@
   >
     <ul class="flex-col gap-2 list-none" style="font-family: var(--font-sans);">
       {% for item in nav.items %}
+        {%- set isActive = (item.url | normalize_path) == here -%}
         <li>
           <a
             href="{{ item.url }}"
+            {% if isActive %}aria-current="page"{% endif %}
             style="display: block; padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); color: var(--on-surface); text-decoration: none;"
           >
             {{ item.label }}

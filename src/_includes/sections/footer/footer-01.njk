@@ -7,12 +7,15 @@
     <p style="font-size: var(--text-sm); color: var(--on-surface-variant);">
       &copy; {% year %} {{ site.name or "aduxion" }}. All rights reserved.
     </p>
+    {%- set here = page.url | normalize_path -%}
     <nav aria-label="Footer navigation">
       <ul class="flex items-center gap-4 list-none" style="font-size: var(--text-sm);">
         {% for item in nav.items %}
+          {%- set isActive = (item.url | normalize_path) == here -%}
           <li>
             <a
               href="{{ item.url }}"
+              {% if isActive %}aria-current="page"{% endif %}
               style="color: var(--on-surface-variant); text-decoration: none;"
             >
               {{ item.label }}
