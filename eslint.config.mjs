@@ -43,7 +43,7 @@ export default [
 
   // -- 11ty config (CommonJS) ------------------------------------------------
   {
-    files: ['.eleventy.js'],
+    files: ['eleventy.config.js'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'commonjs',
