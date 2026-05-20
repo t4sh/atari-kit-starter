@@ -6,6 +6,21 @@
     <meta name="theme-color" id="meta-theme-color" content="oklch(0.985 0 0)" />
     <meta name="view-transition" content="same-origin" />
 
+    {# -- Content Security Policy (build only) ------------------------------
+       Emitted only when `eleventy.env.runMode == "build"` so the dev server's
+       live-reload websocket and inline-injected scripts aren't blocked.
+       'unsafe-inline' is required by the theme-flash <script> below and by
+       the inline `style="…"` attributes throughout the starter. Replace with
+       a nonce-based policy if you need a stricter posture. frame-ancestors
+       is intentionally absent — deliver that via an HTTP response header
+       (CDN, nginx, Netlify _headers, etc.). #}
+    {% if eleventy.env.runMode == "build" %}
+      <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+      />
+    {% endif %}
+
     <title>{{ title or site.name }}</title>
     <meta name="description" content="{{ description or site.description }}" />
 

@@ -19,9 +19,40 @@ module.exports = function (eleventyConfig) {
     return md.render(content || "");
   });
 
-  // JSON stringify for debugging
+  // JSON stringify for debugging in a <pre>. NEVER use inside a <script>
+  // tag — use `jsonScript` for that (it escapes < / > / U+2028 / U+2029).
   eleventyConfig.addFilter("dump", (obj) => {
     return JSON.stringify(obj, null, 2);
+  });
+
+  // Safely embed a value inside a <script> tag. Escapes characters that
+  // would otherwise break out of the script context or cause silent JS
+  // parse errors. Use as: <script>window.X = {{ data | jsonScript | safe }};</script>
+  eleventyConfig.addFilter("jsonScript", (val) =>
+    JSON.stringify(val ?? null)
+      .replace(/</g, "\\u003c")
+      .replace(/>/g, "\\u003e")
+      .replace(/&/g, "\\u0026")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029"),
+  );
+
+  // URL allow-list for hrefs/srcs sourced from data files, CMS, or
+  // frontmatter. Strips javascript:, data:, vbscript:, file: and any
+  // unknown scheme; passes http(s), mailto, tel, relative, fragment,
+  // and query-only forms. Returns "#" for empty / non-string / blocked.
+  eleventyConfig.addFilter("safe_url", (url) => {
+    if (!url || typeof url !== "string") return "#";
+    const trimmed = url.trim();
+    if (!trimmed) return "#";
+    if (
+      trimmed.startsWith("/") ||
+      trimmed.startsWith("#") ||
+      trimmed.startsWith("?")
+    )
+      return trimmed;
+    if (/^(https?|mailto|tel):/i.test(trimmed)) return trimmed;
+    return "#";
   });
 
   // Array slicing — named `slice_range` to avoid shadowing Nunjucks'
@@ -49,10 +80,13 @@ module.exports = function (eleventyConfig) {
     return p || "/";
   });
 
-  // Filter by key=value
+  // Filter by key=value. Both sides are string-coerced so template-supplied
+  // strings ("5") match JSON-loaded numbers (5) — common when filtering
+  // collections against frontmatter or data-file inputs.
   eleventyConfig.addFilter("where", (arr, key, val) => {
     if (!Array.isArray(arr)) return arr;
-    return arr.filter((item) => item[key] === val);
+    const target = String(val);
+    return arr.filter((item) => String(item[key]) === target);
   });
 
   // Sort by key
@@ -61,8 +95,9 @@ module.exports = function (eleventyConfig) {
     return [...arr].sort((a, b) => (a[key] > b[key] ? 1 : -1));
   });
 
-  // JSON parse
-  eleventyConfig.addFilter("json", (str) => {
+  // Parse a JSON string. Renamed from `json` to avoid colliding with the
+  // conventional "render as JSON" filter name.
+  eleventyConfig.addFilter("parseJson", (str) => {
     try {
       return JSON.parse(str);
     } catch {

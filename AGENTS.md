@@ -28,7 +28,7 @@
 
 ```
 {{project-name}}/
-├── .eleventy.js              # 11ty config
+├── eleventy.config.js        # 11ty config
 ├── AGENTS.md                 # Canonical shared instructions (this file)
 ├── CLAUDE.md                 # Claude-specific → "read AGENTS.md first"
 ├── .claude/                  # Claude Code native settings
