@@ -2,7 +2,9 @@ const markdownIt = require("markdown-it");
 
 module.exports = function (eleventyConfig) {
   // -- Markdown engine -------------------------------------------------------
-  const md = markdownIt({ html: true, linkify: true, typographer: true });
+  // html: false — markdown authors cannot inject raw HTML. Flip to true only
+  // when every markdown source (frontmatter, _data, *.md) is trusted.
+  const md = markdownIt({ html: false, linkify: true, typographer: true });
   eleventyConfig.setLibrary("md", md);
 
   // -- Passthrough copy ------------------------------------------------------
@@ -22,8 +24,9 @@ module.exports = function (eleventyConfig) {
     return JSON.stringify(obj, null, 2);
   });
 
-  // Array slicing
-  eleventyConfig.addFilter("slice", (arr, start, end) => {
+  // Array slicing — named `slice_range` to avoid shadowing Nunjucks'
+  // built-in `slice` filter (which has a different "chunks of N" signature).
+  eleventyConfig.addFilter("slice_range", (arr, start, end) => {
     if (!Array.isArray(arr)) return arr;
     return arr.slice(start, end);
   });
@@ -32,6 +35,18 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("limit", (arr, count) => {
     if (!Array.isArray(arr)) return arr;
     return arr.slice(0, count);
+  });
+
+  // Normalize a URL for active-state matching and canonical hrefs.
+  // Strips query, fragment, .html/index.html suffix, and trailing slash
+  // (except root). Returns "/" for empty / non-string inputs.
+  eleventyConfig.addFilter("normalize_path", (url) => {
+    if (!url || typeof url !== "string") return "/";
+    let p = url.split("?")[0].split("#")[0] || "/";
+    if (p.endsWith("/index.html")) p = p.slice(0, -"/index.html".length) || "/";
+    else if (p.endsWith(".html")) p = p.slice(0, -".html".length) || "/";
+    if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
+    return p || "/";
   });
 
   // Filter by key=value
