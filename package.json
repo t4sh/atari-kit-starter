@@ -19,8 +19,9 @@
     "lint:js": "eslint src/assets/js/ scripts/ eleventy.config.js",
     "lint:css": "stylelint 'src/assets/css/**/*.css'",
     "lint:fix": "eslint src/assets/js/ scripts/ eleventy.config.js --fix",
-    "format": "prettier --write 'src/**/*.{njk,css,js,json}'",
-    "format:check": "prettier --check 'src/**/*.{njk,css,js,json}'"
+    "test": "node --test test/**/*.test.cjs",
+    "format": "prettier --write 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'",
+    "format:check": "prettier --check 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

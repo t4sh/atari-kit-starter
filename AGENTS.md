@@ -6,23 +6,37 @@
 ## First Steps
 
 1. Read this file completely.
-2. *(Optional)* If the `agent-memory` skill is installed for this project, follow its instructions for cross-session persistent memory. Install with:
+2. _(Optional)_ If the `agent-memory` skill is installed for this project, follow its instructions for cross-session persistent memory. Install with:
    ```bash
    npx skills add t4sh/skills4sh --skill agent-memory
    ```
    Details: https://skills.sh/t4sh/skills4sh/agent-memory
 
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues, and external PRs are also treated as a triage request surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default five-label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context repo: read root `CONTEXT.md` and root `docs/adr/` when present. See `docs/agents/domain.md`.
+
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| SSG | Eleventy v3 + Nunjucks |
-| CSS | Tailwind v4 (browser CDN) + custom @layer (tokens, base, components, utilities) |
-| JS | Vanilla ES6 modules — no bundler |
-| Icons | Lucide (CDN UMD) |
-| Fonts | Google Fonts — Space Grotesk, Inter Tight, Hubot Sans, JetBrains Mono, Instrument Serif |
-| Linting | ESLint, Stylelint, Prettier (with jinja-template plugin) |
-| Build | 11ty → `inline-build.mjs` (standalone + SPA) |
+| Layer   | Technology                                                                              |
+| ------- | --------------------------------------------------------------------------------------- |
+| SSG     | Eleventy v3 + Nunjucks                                                                  |
+| CSS     | Tailwind v4 (browser CDN) + custom @layer (tokens, base, components, utilities)         |
+| JS      | Vanilla ES6 modules — no bundler                                                        |
+| Icons   | Lucide (CDN UMD)                                                                        |
+| Fonts   | Google Fonts — Space Grotesk, Inter Tight, Hubot Sans, JetBrains Mono, Instrument Serif |
+| Linting | ESLint, Stylelint, Prettier (with jinja-template plugin)                                |
+| Build   | 11ty → `inline-build.mjs` (standalone + SPA)                                            |
 
 ## Project Structure
 
@@ -60,11 +74,11 @@
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Dev server at localhost:3000 |
-| `npm run build` | 11ty build → `out/` |
+| Command                    | Description                   |
+| -------------------------- | ----------------------------- |
+| `npm run dev`              | Dev server at localhost:3000  |
+| `npm run build`            | 11ty build → `out/`           |
 | `npm run build:standalone` | Flat HTML → `out-standalone/` |
-| `npm run build:spa` | SPA → `out-spa/app.html` |
-| `npm run lint` | ESLint + Stylelint |
-| `npm run format` | Prettier |
+| `npm run build:spa`        | SPA → `out-spa/app.html`      |
+| `npm run lint`             | ESLint + Stylelint            |
+| `npm run format`           | Prettier                      |
