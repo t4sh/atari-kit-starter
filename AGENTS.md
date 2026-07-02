@@ -49,6 +49,7 @@ This is a single-context repo: read root `CONTEXT.md` and root `docs/adr/` when 
 ├── .cursor/rules/            # Cursor native rules
 ├── .agents/skills/           # Bundled AI agent skills
 ├── source-reference/         # DROP ZONE: raw HTML/React source pages
+├── docs/                     # Agent setup docs + optional production-extension roadmap
 ├── scripts/inline-build.mjs  # Standalone + SPA builder
 ├── src/
 │   ├── _includes/
@@ -71,6 +72,7 @@ This is a single-context repo: read root `CONTEXT.md` and root `docs/adr/` when 
 7. **Motion-aware.** `prefers-reduced-motion` everywhere. Single IntersectionObserver.
 8. **View Transitions API.** Lifecycle: `{{project-name}}:page-loaded`, `{{project-name}}:before-page-unload` (the `{{project-name}}` token is rewritten by `setup.sh` to the kebab-case slug of the project).
 9. **No bundler.** Vanilla ES6 IIFE, `<script defer>`.
+10. **Production extensions are opt-in.** Keep the scaffold minimal; use `docs/production-extensions.md` when a project needs docs lifecycle, visual regression, SEO/OG generation, CSP hardening, build metadata, shared tokens/chrome packages, or content drift checks.
 
 ## Commands
 

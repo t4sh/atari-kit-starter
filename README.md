@@ -86,6 +86,10 @@ Drop raw HTML/React/prototype files into `source-reference/`. AI agents can conv
 3. Agent creates `.njk` partials and pages
 4. Review in dev server
 
+## Production Extensions
+
+Keep the starter minimal by default. When a project grows toward production, use [docs/production-extensions.md](docs/production-extensions.md) as the opt-in roadmap for docs lifecycle, visual regression, SEO/OG generation, CSP hardening, build metadata, shared tokens/chrome packages, and content drift checks.
+
 ## Commands
 
 | Command                    | Description                   |
