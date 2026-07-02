@@ -13,15 +13,16 @@
     "build:spa": "node scripts/inline-build.mjs --spa",
     "build:inline": "npm run build:standalone && npm run build:spa",
     "build:all": "npm run build && npm run build:inline",
+    "sync:agent-docs": "node scripts/sync-agent-docs.mjs",
     "clean": "rm -rf out out-*",
     "reset": "npm run clean && npm run build:all && npm run dev",
     "lint": "npm run lint:js && npm run lint:css",
-    "lint:js": "eslint src/assets/js/ scripts/ eleventy.config.js",
+    "lint:js": "eslint src/assets/js/ scripts/ test/ eleventy.config.js",
     "lint:css": "stylelint 'src/assets/css/**/*.css'",
-    "lint:fix": "eslint src/assets/js/ scripts/ eleventy.config.js --fix",
+    "lint:fix": "eslint src/assets/js/ scripts/ test/ eleventy.config.js --fix",
     "test": "node --test test/**/*.test.cjs",
-    "format": "prettier --write 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'",
-    "format:check": "prettier --check 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'"
+    "format": "prettier --write '*.{md,json,yml,yaml}' '.github/**/*.{yml,yaml}' 'docs/**/*.md' 'source-reference/**/*.md' 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'",
+    "format:check": "prettier --check '*.{md,json,yml,yaml}' '.github/**/*.{yml,yaml}' 'docs/**/*.md' 'source-reference/**/*.md' 'src/**/*.{njk,css,js,json}' 'test/**/*.cjs'"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

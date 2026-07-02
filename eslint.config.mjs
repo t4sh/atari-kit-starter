@@ -71,9 +71,9 @@ export default [
     },
   },
 
-  // -- Node helper scripts (CommonJS) ----------------------------------------
+  // -- Node helper scripts and tests (CommonJS) ------------------------------
   {
-    files: ['scripts/**/*.cjs'],
+    files: ['scripts/**/*.cjs', 'test/**/*.cjs'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'commonjs',

@@ -49,10 +49,5 @@
     "at-rule-empty-line-before": null,
     "declaration-block-no-duplicate-custom-properties": null
   },
-  "ignoreFiles": [
-    "out/**",
-    "out-standalone/**",
-    "out-spa/**",
-    "node_modules/**"
-  ]
+  "ignoreFiles": ["out/**", "out-standalone/**", "out-spa/**", "node_modules/**"]
 }
