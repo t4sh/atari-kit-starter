@@ -5,6 +5,7 @@ When converting source HTML/React files into aduxion 11ty pages, follow these ru
 ## Section Detection
 
 Look for these boundaries (in priority order):
+
 1. `<!-- SECTION: name -->` comment markers
 2. `<section>`, `<header>`, `<footer>`, `<aside>` semantic HTML
 3. React component boundaries (`function ComponentName()` / `export default`)
@@ -15,6 +16,7 @@ Look for these boundaries (in priority order):
 Sections go to: `src/_includes/sections/{domain}/{domain}-{nn}.njk`
 
 Examples:
+
 - `hero/hero-01.njk`, `hero/hero-02.njk`
 - `cta/cta-01.njk`
 - `pricing/pricing-01.njk`
@@ -25,7 +27,13 @@ Numbered variants allow multiple designs per domain.
 ## Reuse Rules
 
 - If a section matches an existing partial by **structure** (not content), parameterize it with Nunjucks variables rather than creating a duplicate.
-- Use `{% set variableName = "value" %}` before `{% include %}` to pass context.
+- Use the section authoring module in pages:
+  ```nunjucks
+  {% from "macros/section.njk" import renderSection with context %}
+  {{ renderSection("pricing") }}
+  ```
+- Prefer structured section data (`{% set pricing = { ... } %}`) before `{{ renderSection("pricing") }}`.
+- Add default section data and variants to `src/_data/sections.json`.
 - For complex parameterization, use macros in `_includes/macros/`.
 
 ## Token Mapping
@@ -37,17 +45,17 @@ Numbered variants allow multiple designs per domain.
 
 ## React → Nunjucks Cheatsheet
 
-| React | Nunjucks |
-|-------|----------|
-| `className="..."` | `class="..."` |
-| `{items.map(item => ...)}` | `{% for item in items %}...{% endfor %}` |
-| `{condition && <div>...}` | `{% if condition %}<div>...{% endif %}` |
-| `{condition ? <A/> : <B/>}` | `{% if condition %}...{% else %}...{% endif %}` |
-| Props | Nunjucks variables (`{% set %}`) or macro parameters |
-| `useState` | Alpine.js `x-data` or vanilla JS variable |
-| `useEffect` on mount | `DOMContentLoaded` listener or `data-observe` |
-| `onClick={handler}` | `@click="..."` (Alpine) or `onclick="..."` / event listener |
-| Component imports | `{% include "sections/..." %}` or `{% from "macros/..." import ... %}` |
+| React                       | Nunjucks                                                                |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `className="..."`           | `class="..."`                                                           |
+| `{items.map(item => ...)}`  | `{% for item in items %}...{% endfor %}`                                |
+| `{condition && <div>...}`   | `{% if condition %}<div>...{% endif %}`                                 |
+| `{condition ? <A/> : <B/>}` | `{% if condition %}...{% else %}...{% endif %}`                         |
+| Props                       | Nunjucks variables (`{% set %}`) or macro parameters                    |
+| `useState`                  | Alpine.js `x-data` or vanilla JS variable                               |
+| `useEffect` on mount        | `DOMContentLoaded` listener or `data-observe`                           |
+| `onClick={handler}`         | `@click="..."` (Alpine) or `onclick="..."` / event listener             |
+| Component imports           | `{{ renderSection("domain") }}` or `{% from "macros/..." import ... %}` |
 
 ## What to Discard
 
@@ -62,6 +70,7 @@ Numbered variants allow multiple designs per domain.
 
 - If a section has hardcoded repeated data (list of features, team members, pricing tiers), extract to `src/_data/{name}.json` and loop with `{% for %}`.
 - Reference in templates via the filename: `_data/features.json` → `{{ features }}`.
+- If the data defines section defaults or variants, place it in `src/_data/sections.json` so the section authoring module stays authoritative.
 
 ## Animation / Interactivity
 

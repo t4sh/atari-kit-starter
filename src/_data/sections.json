@@ -1,0 +1,18 @@
+{
+  "hero": {
+    "variant": "01",
+    "title": "Build something remarkable",
+    "subtitle": "A design-system-agnostic prototype built with Eleventy, Tailwind v4, and vanilla JavaScript.",
+    "actions": [
+      { "label": "Get Started", "variant": "primary", "size": "lg", "href": "#" },
+      { "label": "Learn More", "variant": "outline", "size": "lg", "href": "/about/" }
+    ]
+  },
+  "cta": {
+    "variant": "01",
+    "title": "Ready to get started?",
+    "description": "Join us and start building your next prototype today.",
+    "buttonText": "Get Started",
+    "buttonHref": "#"
+  }
+}

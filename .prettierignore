@@ -6,3 +6,7 @@ node_modules/
 .eleventy-cache/
 *.min.js
 *.min.css
+
+# Contains Nunjucks loops inside <style type="text/tailwindcss"> for the
+# generated Tailwind @theme block; Prettier's CSS parser cannot parse it.
+src/_includes/layouts/base.njk

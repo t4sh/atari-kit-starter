@@ -54,7 +54,14 @@ sections/
 └── features/features-01.njk
 ```
 
-Use in pages: `{% include "sections/pricing/pricing-01.njk" %}`
+Use in pages via the section authoring module:
+
+```nunjucks
+{% from "macros/section.njk" import renderSection with context %}
+{{ renderSection("pricing") }}
+```
+
+Default variants and content live in `src/_data/sections.json`.
 
 ## Changing the Design System
 
@@ -62,13 +69,13 @@ Edit `src/assets/css/tokens.css` — all components reference tokens via `var()`
 
 ```css
 :root {
-  --primary: oklch(0.55 0.15 250);  /* Change this */
-  --surface: oklch(0.985 0 0);       /* And this */
+  --primary: oklch(0.55 0.15 250); /* Change this */
+  --surface: oklch(0.985 0 0); /* And this */
   /* ... */
 }
 ```
 
-Also update the `@theme` block in `src/_includes/layouts/base.njk` to map new tokens to Tailwind utilities.
+Also update `src/_data/theme.json` to map token values to Tailwind `@theme` utilities. The layout renders that manifest into the browser Tailwind block.
 
 ## Source Reference Workflow
 
@@ -81,20 +88,21 @@ Drop raw HTML/React/prototype files into `source-reference/`. AI agents can conv
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Dev server at localhost:3000 |
-| `npm run build` | 11ty build → `out/` |
+| Command                    | Description                   |
+| -------------------------- | ----------------------------- |
+| `npm run dev`              | Dev server at localhost:3000  |
+| `npm run build`            | 11ty build → `out/`           |
 | `npm run build:standalone` | Flat HTML → `out-standalone/` |
-| `npm run build:spa` | SPA → `out-spa/app.html` |
-| `npm run lint` | ESLint + Stylelint |
-| `npm run format` | Prettier |
+| `npm run build:spa`        | SPA → `out-spa/app.html`      |
+| `npm run lint`             | ESLint + Stylelint            |
+| `npm run format`           | Prettier                      |
 
 ## AI Agent Skills
 
 Bundled in `.agents/skills/`. See [.agents/README.md](.agents/README.md) for setup instructions.
 
 To sync to your global skills (recommended):
+
 ```bash
 mkdir -p ~/.agents/skills
 cp -r .agents/skills/* ~/.agents/skills/

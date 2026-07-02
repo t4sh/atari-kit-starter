@@ -27,17 +27,37 @@ const SPA_DIR = join(ROOT, 'out-spa');
 const SPA_MODE = process.argv.includes('--spa');
 const SKIP_FRESHNESS = process.argv.includes('--no-freshness-check');
 
+// -- File system adapter -----------------------------------------------------
+// Keep disk effects behind one seam so HTML transform logic can stay local and
+// future tests can swap this adapter without rewriting the build module.
+const disk = {
+  exists: existsSync,
+  list: readdirSync,
+  stat: statSync,
+  mkdir(dir) {
+    mkdirSync(dir, { recursive: true });
+  },
+  readText(filePath) {
+    return readFileSync(filePath, 'utf-8');
+  },
+  readBuffer: readFileSync,
+  writeText(filePath, content) {
+    writeFileSync(filePath, content, 'utf-8');
+  },
+  writeBuffer: writeFileSync,
+};
+
 // -- Helpers ----------------------------------------------------------------
 
 function ensureDir(dir) {
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  if (!disk.exists(dir)) disk.mkdir(dir);
 }
 
 function findFiles(dir, ext, files = []) {
-  if (!existsSync(dir)) return files;
-  for (const entry of readdirSync(dir)) {
+  if (!disk.exists(dir)) return files;
+  for (const entry of disk.list(dir)) {
     const full = join(dir, entry);
-    if (statSync(full).isDirectory()) {
+    if (disk.stat(full).isDirectory()) {
       findFiles(full, ext, files);
     } else if (full.endsWith(ext)) {
       files.push(full);
@@ -59,34 +79,34 @@ function findFiles(dir, ext, files = []) {
  * --no-freshness-check to silence the warning entirely.
  */
 function assertOutIsReady(label) {
-  if (!existsSync(OUT_DIR)) {
+  if (!disk.exists(OUT_DIR)) {
     console.error(
       `\n[${label}] /out does not exist.\n` +
-      `  Run "npm run build" first, or use "npm run build:all" to do both steps.\n`
+        `  Run "npm run build" first, or use "npm run build:all" to do both steps.\n`
     );
     process.exit(1);
   }
 
   const indexPath = join(OUT_DIR, 'index.html');
-  if (!existsSync(indexPath)) {
+  if (!disk.exists(indexPath)) {
     console.error(
       `\n[${label}] /out exists but has no index.html.\n` +
-      `  11ty build appears incomplete. Re-run "npm run build".\n`
+        `  11ty build appears incomplete. Re-run "npm run build".\n`
     );
     process.exit(1);
   }
 
   if (SKIP_FRESHNESS) return;
 
-  const outMtime = statSync(indexPath).mtimeMs;
+  const outMtime = disk.stat(indexPath).mtimeMs;
   let newestSrcMtime = 0;
   let newestSrcFile = '';
 
   function walk(dir) {
-    if (!existsSync(dir)) return;
-    for (const entry of readdirSync(dir)) {
+    if (!disk.exists(dir)) return;
+    for (const entry of disk.list(dir)) {
       const full = join(dir, entry);
-      const st = statSync(full);
+      const st = disk.stat(full);
       if (st.isDirectory()) {
         walk(full);
       } else if (st.mtimeMs > newestSrcMtime) {
@@ -101,25 +121,35 @@ function assertOutIsReady(label) {
     const lagSec = ((newestSrcMtime - outMtime) / 1000).toFixed(0);
     console.warn(
       `\n[${label}] /out/index.html is older than the newest source file.\n` +
-      `  Newest source: ${newestSrcFile} (${lagSec}s newer than /out)\n` +
-      `  /out may be stale. Run "npm run build" before "npm run build:inline"\n` +
-      `  (or use "npm run build:all" to do both). Proceeding anyway.\n`
+        `  Newest source: ${newestSrcFile} (${lagSec}s newer than /out)\n` +
+        `  /out may be stale. Run "npm run build" before "npm run build:inline"\n` +
+        `  (or use "npm run build:all" to do both). Proceeding anyway.\n`
     );
   }
 }
 
 function readFileOrEmpty(filePath) {
-  try { return readFileSync(filePath, 'utf-8'); } catch { return ''; }
+  try {
+    return disk.readText(filePath);
+  } catch {
+    return '';
+  }
 }
 
 function fileToBase64DataUri(filePath) {
   try {
-    const buf = readFileSync(filePath);
+    const buf = disk.readBuffer(filePath);
     const ext = extname(filePath).slice(1).toLowerCase();
     const mimeMap = {
-      png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
-      gif: 'image/gif', svg: 'image/svg+xml', webp: 'image/webp',
-      ico: 'image/x-icon', woff2: 'font/woff2', woff: 'font/woff',
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      gif: 'image/gif',
+      svg: 'image/svg+xml',
+      webp: 'image/webp',
+      ico: 'image/x-icon',
+      woff2: 'font/woff2',
+      woff: 'font/woff',
     };
     const mime = mimeMap[ext] || 'application/octet-stream';
     return `data:${mime};base64,${buf.toString('base64')}`;
@@ -167,15 +197,15 @@ function rewriteLinksToFlat(html) {
 }
 
 function copyDirSync(src, dest) {
-  if (!existsSync(src)) return;
+  if (!disk.exists(src)) return;
   ensureDir(dest);
-  for (const entry of readdirSync(src)) {
+  for (const entry of disk.list(src)) {
     const srcPath = join(src, entry);
     const destPath = join(dest, entry);
-    if (statSync(srcPath).isDirectory()) {
+    if (disk.stat(srcPath).isDirectory()) {
       copyDirSync(srcPath, destPath);
     } else {
-      writeFileSync(destPath, readFileSync(srcPath));
+      disk.writeBuffer(destPath, disk.readBuffer(srcPath));
     }
   }
 }
@@ -185,55 +215,46 @@ function copyDirSync(src, dest) {
 function inlineCSS(html, htmlDir) {
   // Match any <link ...> tag, then pick out rel/href from the attrs so the
   // order doesn't matter (<link rel=".." href=".."> vs <link href=".." rel="..">).
-  return html.replace(
-    /<link\s+([^>]*?)\/?>/gi,
-    (match, attrs) => {
-      if (!/\brel\s*=\s*["']stylesheet["']/i.test(attrs)) return match;
-      const hrefMatch = attrs.match(/\bhref\s*=\s*["']([^"']+)["']/i);
-      if (!hrefMatch) return match;
-      const href = hrefMatch[1];
-      if (href.startsWith('http://') || href.startsWith('https://')) return match;
-      const cssPath = href.startsWith('/') ? join(OUT_DIR, href) : join(htmlDir, href);
-      const css = readFileOrEmpty(cssPath);
-      if (!css) {
-        console.warn(`  [inline] missing CSS: ${href} (kept as external <link>)`);
-        return match;
-      }
-      return `<style>/* inlined: ${href} */\n${css}\n</style>`;
+  return html.replace(/<link\s+([^>]*?)\/?>/gi, (match, attrs) => {
+    if (!/\brel\s*=\s*["']stylesheet["']/i.test(attrs)) return match;
+    const hrefMatch = attrs.match(/\bhref\s*=\s*["']([^"']+)["']/i);
+    if (!hrefMatch) return match;
+    const href = hrefMatch[1];
+    if (href.startsWith('http://') || href.startsWith('https://')) return match;
+    const cssPath = href.startsWith('/') ? join(OUT_DIR, href) : join(htmlDir, href);
+    const css = readFileOrEmpty(cssPath);
+    if (!css) {
+      console.warn(`  [inline] missing CSS: ${href} (kept as external <link>)`);
+      return match;
     }
-  );
+    return `<style>/* inlined: ${href} */\n${css}\n</style>`;
+  });
 }
 
 function inlineJS(html, htmlDir) {
-  return html.replace(
-    /<script\s+[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi,
-    (match, src) => {
-      if (src.startsWith('http://') || src.startsWith('https://')) return match;
-      const jsPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
-      const js = readFileOrEmpty(jsPath);
-      if (!js) {
-        console.warn(`  [inline] missing JS: ${src} (kept as external <script>)`);
-        return match;
-      }
-      return `<script>/* inlined: ${src} */\n${js}\n</script>`;
+  return html.replace(/<script\s+[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi, (match, src) => {
+    if (src.startsWith('http://') || src.startsWith('https://')) return match;
+    const jsPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
+    const js = readFileOrEmpty(jsPath);
+    if (!js) {
+      console.warn(`  [inline] missing JS: ${src} (kept as external <script>)`);
+      return match;
     }
-  );
+    return `<script>/* inlined: ${src} */\n${js}\n</script>`;
+  });
 }
 
 function inlineImages(html, htmlDir) {
-  return html.replace(
-    /(<img\s+[^>]*src=["'])([^"']+)(["'][^>]*>)/gi,
-    (match, pre, src, post) => {
-      if (src.startsWith('http') || src.startsWith('data:')) return match;
-      const imgPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
-      const dataUri = fileToBase64DataUri(imgPath);
-      if (!dataUri) {
-        console.warn(`  [inline] missing image: ${src} (kept as external <img>)`);
-        return match;
-      }
-      return `${pre}${dataUri}${post}`;
+  return html.replace(/(<img\s+[^>]*src=["'])([^"']+)(["'][^>]*>)/gi, (match, pre, src, post) => {
+    if (src.startsWith('http') || src.startsWith('data:')) return match;
+    const imgPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
+    const dataUri = fileToBase64DataUri(imgPath);
+    if (!dataUri) {
+      console.warn(`  [inline] missing image: ${src} (kept as external <img>)`);
+      return match;
     }
-  );
+    return `${pre}${dataUri}${post}`;
+  });
 }
 
 function minifyHTML(html) {
@@ -241,7 +262,8 @@ function minifyHTML(html) {
   // Protect whitespace-sensitive regions. <pre> and <textarea> preserve
   // literal whitespace per HTML spec; collapsing it silently corrupts
   // code samples, comment drafts, etc.
-  const re = /(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>|<textarea[\s\S]*?<\/textarea>)/gi;
+  const re =
+    /(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>|<textarea[\s\S]*?<\/textarea>)/gi;
   let lastIndex = 0;
   let match;
   while ((match = re.exec(html)) !== null) {
@@ -250,18 +272,20 @@ function minifyHTML(html) {
     lastIndex = re.lastIndex;
   }
   parts.push({ type: 'html', content: html.slice(lastIndex) });
-  return parts.map(p => {
-    if (p.type === 'protected') return p.content;
-    return p.content
-      .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
-      .replace(/>\s{2,}</g, '> <')
-      .replace(/\s{2,}/g, ' ')
-      .replace(/\n\s*\n/g, '\n');
-  }).join('');
+  return parts
+    .map((p) => {
+      if (p.type === 'protected') return p.content;
+      return p.content
+        .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
+        .replace(/>\s{2,}</g, '> <')
+        .replace(/\s{2,}/g, ' ')
+        .replace(/\n\s*\n/g, '\n');
+    })
+    .join('');
 }
 
 function processFile(filePath) {
-  let html = readFileSync(filePath, 'utf-8');
+  let html = disk.readText(filePath);
   const htmlDir = dirname(filePath);
   html = inlineCSS(html, htmlDir);
   html = inlineJS(html, htmlDir);
@@ -285,7 +309,7 @@ function buildStandalone() {
 
   const assetsSrc = join(OUT_DIR, 'assets');
   const assetsDest = join(STANDALONE_DIR, 'assets');
-  if (existsSync(assetsSrc)) {
+  if (disk.exists(assetsSrc)) {
     copyDirSync(assetsSrc, assetsDest);
     console.log('  assets/ copied');
   }
@@ -298,7 +322,7 @@ function buildStandalone() {
     let html = processFile(file);
     html = rewriteLinksToFlat(html);
 
-    writeFileSync(join(STANDALONE_DIR, flatName), html, 'utf-8');
+    disk.writeText(join(STANDALONE_DIR, flatName), html);
     console.log(`  ${relPath} -> ${flatName}`);
   }
 
@@ -312,7 +336,11 @@ function slugify(route) {
 }
 
 function escapeAttr(str) {
-  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function buildSPA() {
@@ -329,7 +357,7 @@ function buildSPA() {
 
   // Use homepage as the shell
   const homepagePath = join(OUT_DIR, 'index.html');
-  if (!existsSync(homepagePath)) {
+  if (!disk.exists(homepagePath)) {
     console.error('No index.html found in /out.');
     process.exit(1);
   }
@@ -363,7 +391,7 @@ function buildSPA() {
       .replace(/\\/g, '/');
     const route = '/' + relPath;
 
-    let html = readFileSync(file, 'utf-8');
+    let html = disk.readText(file);
     html = inlineJS(html, dirname(file));
 
     const mainMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
@@ -398,6 +426,7 @@ ${headContent}
 </style>
 </head>
 <body${bodyAttrs}>
+<script>window.PageLifecycleMode = 'spa';</script>
 ${shellBeforeHash}
   <main id="main-content"></main>
 ${shellAfterHash}
@@ -413,11 +442,24 @@ ${shellAfterHash}
 (function () {
   'use strict';
 
+  var lifecycle = window.PageLifecycle;
   var templates = document.querySelectorAll('template[data-route]');
   var routeMap = {};
   templates.forEach(function (t) {
     routeMap[t.getAttribute('data-route')] = t;
   });
+
+  function sanitize(html) {
+    return lifecycle ? lifecycle.sanitizeHTML(html) : html;
+  }
+
+  function dispatchBeforePageUnload(url) {
+    if (lifecycle) lifecycle.dispatchBeforePageUnload({ url: url });
+  }
+
+  function dispatchPageLoaded(url) {
+    if (lifecycle) lifecycle.dispatchPageLoaded({ url: url });
+  }
 
   function navigate() {
     var hash = window.location.hash.slice(1) || '/';
@@ -425,15 +467,15 @@ ${shellAfterHash}
 
     if (!tpl) return;
 
-    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
+    dispatchBeforePageUnload(hash);
 
     var main = document.getElementById('main-content');
-    main.innerHTML = tpl.innerHTML;
+    main.innerHTML = sanitize(tpl.innerHTML);
 
     document.title = tpl.getAttribute('data-title') || '{{project-name}}';
     window.scrollTo(0, 0);
 
-    document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
+    dispatchPageLoaded(hash);
 
     // Re-init Lucide icons
     if (typeof lucide !== 'undefined' && lucide.createIcons) {
@@ -461,11 +503,11 @@ ${shellAfterHash}
 </body>
 </html>`;
 
-  writeFileSync(join(SPA_DIR, 'app.html'), spaHTML, 'utf-8');
+  disk.writeText(join(SPA_DIR, 'app.html'), spaHTML);
 
   // Gzip
   const gzipped = gzipSync(Buffer.from(spaHTML, 'utf-8'), { level: 9 });
-  writeFileSync(join(SPA_DIR, 'app.html.gz'), gzipped);
+  disk.writeBuffer(join(SPA_DIR, 'app.html.gz'), gzipped);
 
   const sizeKB = (Buffer.byteLength(spaHTML, 'utf-8') / 1024).toFixed(1);
   const gzKB = (gzipped.length / 1024).toFixed(1);

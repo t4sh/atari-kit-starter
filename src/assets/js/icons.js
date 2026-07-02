@@ -3,7 +3,7 @@
  *
  * Calls lucide.createIcons() on:
  * - DOMContentLoaded
- * - {{project-name}}:page-loaded (after View Transition)
+ * - PageLifecycle page-loaded (after View Transition or SPA navigation)
  * - site-theme-change (icons may swap in dark mode)
  */
 
@@ -16,7 +16,10 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', render);
-  document.addEventListener('{{project-name}}:page-loaded', render);
+  const lifecycle = window.PageLifecycle;
+  if (lifecycle) {
+    lifecycle.onReady(render);
+    lifecycle.onPageLoaded(render);
+  }
   document.addEventListener('site-theme-change', render);
 })();

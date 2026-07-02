@@ -28,20 +28,29 @@ echo ""
 echo "Setting up: $PROJECT_NAME ($project_slug)"
 echo "───────────────────────────────────────"
 
+replace_token() {
+  local token="$1"
+  local value="$2"
+  local file="$3"
+
+  TOKEN="$token" VALUE="$value" perl -0pi -e 's/\Q$ENV{TOKEN}\E/$ENV{VALUE}/g' "$file"
+}
+
 # ── 1. Replace placeholders ──
 echo "  Replacing placeholders..."
 
 # Files that contain {{PROJECT_NAME}} or {{project-name}}
 for f in \
   package.json \
+  package-lock.json \
   AGENTS.md \
   CLAUDE.md \
   src/_data/site.json \
   .cursor/rules/index.mdc \
 ; do
   if [ -f "$f" ]; then
-    sed -i '' "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" "$f"
-    sed -i '' "s/{{project-name}}/$project_slug/g" "$f"
+    replace_token "{{PROJECT_NAME}}" "$PROJECT_NAME" "$f"
+    replace_token "{{project-name}}" "$project_slug" "$f"
   fi
 done
 echo "    Done."
@@ -53,7 +62,7 @@ echo "    Done."
 echo "  Renaming lifecycle events..."
 for f in src/assets/js/*.js scripts/inline-build.mjs; do
   if [ -f "$f" ]; then
-    sed -i '' "s/{{project-name}}/${project_slug}/g" "$f"
+    replace_token "{{project-name}}" "$project_slug" "$f"
   fi
 done
 echo "    Done."

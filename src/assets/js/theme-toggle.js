@@ -91,6 +91,6 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', init);
-  document.addEventListener('{{project-name}}:page-loaded', init);
+  const lifecycle = window.PageLifecycle;
+  if (lifecycle) lifecycle.onReady(init);
 })();

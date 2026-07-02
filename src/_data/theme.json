@@ -1,0 +1,120 @@
+{
+  "sections": [
+    {
+      "label": "Fonts (literals matching tokens.css)",
+      "tokens": [
+        { "name": "--font-sans", "value": "'Space Grotesk', sans-serif" },
+        { "name": "--font-heading", "value": "'Inter Tight', sans-serif" },
+        { "name": "--font-body", "value": "'Hubot Sans', 'Inter Tight', sans-serif" },
+        { "name": "--font-mono", "value": "'JetBrains Mono', monospace" },
+        { "name": "--font-serif", "value": "'Instrument Serif', Georgia, serif" }
+      ]
+    },
+    {
+      "label": "Type scale (drives text-2xs/xs/sm/base/lg/xl/...)",
+      "tokens": [
+        { "name": "--text-2xs", "value": "0.6875rem" },
+        { "name": "--text-xs", "value": "0.75rem" },
+        { "name": "--text-sm", "value": "0.875rem" },
+        { "name": "--text-base", "value": "1rem" },
+        { "name": "--text-lg", "value": "1.125rem" },
+        { "name": "--text-xl", "value": "1.25rem" },
+        { "name": "--text-2xl", "value": "1.5rem" },
+        { "name": "--text-3xl", "value": "1.875rem" },
+        { "name": "--text-4xl", "value": "2.25rem" },
+        { "name": "--text-5xl", "value": "3rem" }
+      ]
+    },
+    {
+      "label": "Spacing base (matches tokens.css --space-N 0.25rem multiples)",
+      "tokens": [{ "name": "--spacing", "value": "0.25rem" }]
+    },
+    {
+      "label": "Surface system",
+      "tokens": [
+        { "name": "--color-surface", "value": "var(--surface)" },
+        { "name": "--color-surface-dim", "value": "var(--surface-dim)" },
+        { "name": "--color-surface-bright", "value": "var(--surface-bright)" },
+        { "name": "--color-surface-container-lowest", "value": "var(--surface-container-lowest)" },
+        { "name": "--color-surface-container-low", "value": "var(--surface-container-low)" },
+        { "name": "--color-surface-container", "value": "var(--surface-container)" },
+        { "name": "--color-surface-container-high", "value": "var(--surface-container-high)" },
+        {
+          "name": "--color-surface-container-highest",
+          "value": "var(--surface-container-highest)"
+        },
+        { "name": "--color-on-surface", "value": "var(--on-surface)" },
+        { "name": "--color-on-surface-variant", "value": "var(--on-surface-variant)" }
+      ]
+    },
+    {
+      "label": "Color roles",
+      "tokens": [
+        { "name": "--color-primary", "value": "var(--primary)" },
+        { "name": "--color-on-primary", "value": "var(--on-primary)" },
+        { "name": "--color-primary-container", "value": "var(--primary-container)" },
+        { "name": "--color-secondary", "value": "var(--secondary)" },
+        { "name": "--color-on-secondary", "value": "var(--on-secondary)" },
+        { "name": "--color-tertiary", "value": "var(--tertiary)" },
+        { "name": "--color-on-tertiary", "value": "var(--on-tertiary)" },
+        { "name": "--color-error", "value": "var(--error)" },
+        { "name": "--color-on-error", "value": "var(--on-error)" }
+      ]
+    },
+    {
+      "label": "Outline",
+      "tokens": [
+        { "name": "--color-outline", "value": "var(--outline)" },
+        { "name": "--color-outline-variant", "value": "var(--outline-variant)" }
+      ]
+    },
+    {
+      "label": "Shadows (numeric 1..5 project convention)",
+      "tokens": [
+        {
+          "name": "--shadow-1",
+          "value": "0 1px 3px 1px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.1)"
+        },
+        {
+          "name": "--shadow-2",
+          "value": "0 2px 6px 2px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.1)"
+        },
+        {
+          "name": "--shadow-3",
+          "value": "0 4px 8px 3px oklch(0 0 0 / 0.08), 0 1px 3px oklch(0 0 0 / 0.1)"
+        },
+        {
+          "name": "--shadow-4",
+          "value": "0 6px 10px 4px oklch(0 0 0 / 0.08), 0 2px 3px oklch(0 0 0 / 0.1)"
+        },
+        {
+          "name": "--shadow-5",
+          "value": "0 8px 12px 6px oklch(0 0 0 / 0.08), 0 4px 4px oklch(0 0 0 / 0.1)"
+        }
+      ]
+    },
+    {
+      "label": "Radii",
+      "tokens": [
+        { "name": "--radius-xs", "value": "0.25rem" },
+        { "name": "--radius-sm", "value": "0.5rem" },
+        { "name": "--radius-md", "value": "0.75rem" },
+        { "name": "--radius-lg", "value": "1rem" },
+        { "name": "--radius-xl", "value": "1.5rem" },
+        { "name": "--radius-full", "value": "9999px" }
+      ]
+    },
+    {
+      "label": "Motion / duration (drives duration-* / ease-* utilities)",
+      "tokens": [
+        { "name": "--duration-fast", "value": "150ms" },
+        { "name": "--duration-normal", "value": "250ms" },
+        { "name": "--duration-slow", "value": "400ms" },
+        { "name": "--duration-slower", "value": "600ms" },
+        { "name": "--ease-standard", "value": "cubic-bezier(0.2, 0, 0, 1)" },
+        { "name": "--ease-decelerate", "value": "cubic-bezier(0, 0, 0, 1)" },
+        { "name": "--ease-accelerate", "value": "cubic-bezier(0.3, 0, 1, 1)" }
+      ]
+    }
+  ]
+}

@@ -4,7 +4,9 @@ title: Home
 permalink: /
 ---
 
-{% include "sections/hero/hero-01.njk" %}
+{% from "macros/section.njk" import renderSection with context %}
+
+{{ renderSection("hero") }}
 
 {# -- Feature cards --------------------------------------------------------- #}
 <section class="section" data-observe="stagger" style="background: var(--surface);">
@@ -46,4 +48,4 @@ permalink: /
   </div>
 </section>
 
-{% include "sections/cta/cta-01.njk" %}
+{{ renderSection("cta") }}

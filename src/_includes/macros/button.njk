@@ -20,12 +20,14 @@
                attribute names.
 #}
 
-{# Build extra-attrs string. Inside this macro autoescape applies to {{ k }}
-   and {{ v }}, so values are safely escaped. The outer `| safe` only
-   re-emits the structurally-known ` key="value"` separator pattern. #}
+{# Build extra-attrs string. Attribute names are allow-listed by the
+   `safe_attr_name` filter; values are escaped by Nunjucks autoescape.
+   The outer `| safe` only re-emits the structurally-known ` key="value"`
+   separator pattern for validated attribute names. #}
 {% macro _attrs(attrs) -%}
   {%- for k, v in (attrs or {}) -%}
-    {{ " " }}{{ k }}="{{ v }}"
+    {%- set safeName = k | safe_attr_name -%}
+    {%- if safeName %}{{ " " }}{{ safeName }}="{{ v }}"{%- endif -%}
   {%- endfor -%}
 {% endmacro %}
 

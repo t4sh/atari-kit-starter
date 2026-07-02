@@ -1,0 +1,20 @@
+{#
+  Section authoring module.
+
+  Interface:
+    {% from "macros/section.njk" import renderSection with context %}
+    {{ renderSection("hero") }}
+    {{ renderSection("cta", "02") }}
+    {{ renderSection("cta", "", cta) }}
+
+  Variant defaults live in src/_data/sections.json. Pass structured page-level
+  overrides as the third argument so they cross the macro include seam.
+#}
+
+{% macro renderSection(domain, variant, config) %}
+  {%- set sectionDefaults = sections[domain] or {} -%}
+  {%- set sectionConfig = config or sectionDefaults -%}
+  {%- set chosenVariant = variant or sectionConfig.variant or sectionDefaults.variant or "01" -%}
+  {%- set sectionFile = "sections/" + domain + "/" + domain + "-" + chosenVariant + ".njk" -%}
+  {% include sectionFile %}
+{% endmacro %}

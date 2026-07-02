@@ -146,7 +146,10 @@
   }
 
   // -- Lifecycle hooks ------------------------------------------------------
-  document.addEventListener('DOMContentLoaded', scan);
-  document.addEventListener('{{project-name}}:page-loaded', scan);
-  document.addEventListener('{{project-name}}:before-page-unload', cleanup);
+  const lifecycle = window.PageLifecycle;
+  if (lifecycle) {
+    lifecycle.onReady(scan);
+    lifecycle.onPageLoaded(scan);
+    lifecycle.onBeforePageUnload(cleanup);
+  }
 })();

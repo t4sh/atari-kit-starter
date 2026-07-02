@@ -4,6 +4,8 @@ title: About
 description: About this project — atari-kit-starter scaffold.
 ---
 
+{% from "macros/section.njk" import renderSection with context %}
+
 <section class="section" data-observe="reveal-up" style="background: var(--surface);">
   <div class="container container--narrow">
     <h1 style="margin-bottom: var(--space-6);">About this project</h1>
@@ -19,7 +21,12 @@ description: About this project — atari-kit-starter scaffold.
   </div>
 </section>
 
-{% set ctaTitle = "Ready to build?" %}
-{% set ctaDescription = "Start adding pages and sections to bring your prototype to life." %}
-{% set ctaButtonText = "Get Started" %}
-{% include "sections/cta/cta-01.njk" %}
+{%
+  set cta = {
+    title: "Ready to build?",
+    description: "Start adding pages and sections to bring your prototype to life.",
+    buttonText: "Get Started",
+    buttonHref: "#"
+  }
+%}
+{{ renderSection("cta", "", cta) }}

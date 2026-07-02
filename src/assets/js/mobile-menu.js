@@ -5,7 +5,7 @@
  * - Manages aria-expanded on toggle button
  * - Traps focus within menu when open
  * - Closes on Escape key
- * - Cleans up on {{project-name}}:before-page-unload
+ * - Cleans up through PageLifecycle before page swaps
  */
 
 (function () {
@@ -62,7 +62,10 @@
     isOpen = false;
   }
 
-  document.addEventListener('DOMContentLoaded', init);
-  document.addEventListener('{{project-name}}:page-loaded', init);
-  document.addEventListener('{{project-name}}:before-page-unload', cleanup);
+  const lifecycle = window.PageLifecycle;
+  if (lifecycle) {
+    lifecycle.onReady(init);
+    lifecycle.onPageLoaded(init);
+    lifecycle.onBeforePageUnload(cleanup);
+  }
 })();

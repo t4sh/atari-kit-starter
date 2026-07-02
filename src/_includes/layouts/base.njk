@@ -56,6 +56,11 @@
 
     {# -- Tailwind v4 Browser Build ------------------------------------------ #}
     {#
+      Prototype-only CDN waiver: @tailwindcss/browser@4 is intentionally used
+      by this starter for zero-build prototyping. It is major-version pinned,
+      but not byte-stable enough for SRI. For production, replace this with a
+      first-party Tailwind CLI build and remove cdn.jsdelivr.net from CSP.
+
       IMPORTANT: @theme values are evaluated by the TW4 JIT at parse time,
       before tokens.css (loaded via <link> below) is available. That means
       var(--token) refs here CANNOT resolve and will break utility generation
@@ -69,86 +74,24 @@
       Keep light-mode values here; dark-mode overrides live in tokens.css via
       the `html.dark` cascade and apply at runtime.
     #}
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
+    ></script>
     <style type="text/tailwindcss">
       @layer base, components, utilities;
 
       @theme {
-        /* -- Fonts (literals matching tokens.css) -- */
-        --font-sans: 'Space Grotesk', sans-serif;
-        --font-heading: 'Inter Tight', sans-serif;
-        --font-body: 'Hubot Sans', 'Inter Tight', sans-serif;
-        --font-mono: 'JetBrains Mono', monospace;
-        --font-serif: 'Instrument Serif', Georgia, serif;
-
-        /* -- Type scale (drives text-2xs/xs/sm/base/lg/xl/...) -- */
-        --text-2xs: 0.6875rem;
-        --text-xs: 0.75rem;
-        --text-sm: 0.875rem;
-        --text-base: 1rem;
-        --text-lg: 1.125rem;
-        --text-xl: 1.25rem;
-        --text-2xl: 1.5rem;
-        --text-3xl: 1.875rem;
-        --text-4xl: 2.25rem;
-        --text-5xl: 3rem;
-
-        /* -- Spacing base (drives p-N, m-N, gap-N via TW4 calc multiplier).
-           tokens.css --space-N values are exact 0.25rem multiples, so
-           `p-5` === `var(--space-5)` === 1.25rem. */
-        --spacing: 0.25rem;
-
-        /* -- Surface system -- */
-        --color-surface: var(--surface);
-        --color-surface-dim: var(--surface-dim);
-        --color-surface-bright: var(--surface-bright);
-        --color-surface-container-lowest: var(--surface-container-lowest);
-        --color-surface-container-low: var(--surface-container-low);
-        --color-surface-container: var(--surface-container);
-        --color-surface-container-high: var(--surface-container-high);
-        --color-surface-container-highest: var(--surface-container-highest);
-        --color-on-surface: var(--on-surface);
-        --color-on-surface-variant: var(--on-surface-variant);
-
-        /* -- Color roles -- */
-        --color-primary: var(--primary);
-        --color-on-primary: var(--on-primary);
-        --color-primary-container: var(--primary-container);
-        --color-secondary: var(--secondary);
-        --color-on-secondary: var(--on-secondary);
-        --color-tertiary: var(--tertiary);
-        --color-on-tertiary: var(--on-tertiary);
-        --color-error: var(--error);
-        --color-on-error: var(--on-error);
-
-        /* -- Outline -- */
-        --color-outline: var(--outline);
-        --color-outline-variant: var(--outline-variant);
-
-        /* -- Shadows (numeric 1..5 is the project convention;
-           dark-mode values in tokens.css via html.dark cascade) -- */
-        --shadow-1: 0 1px 3px 1px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.1);
-        --shadow-2: 0 2px 6px 2px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.1);
-        --shadow-3: 0 4px 8px 3px oklch(0 0 0 / 0.08), 0 1px 3px oklch(0 0 0 / 0.1);
-        --shadow-4: 0 6px 10px 4px oklch(0 0 0 / 0.08), 0 2px 3px oklch(0 0 0 / 0.1);
-        --shadow-5: 0 8px 12px 6px oklch(0 0 0 / 0.08), 0 4px 4px oklch(0 0 0 / 0.1);
-
-        /* -- Radii -- */
-        --radius-xs: 0.25rem;
-        --radius-sm: 0.5rem;
-        --radius-md: 0.75rem;
-        --radius-lg: 1rem;
-        --radius-xl: 1.5rem;
-        --radius-full: 9999px;
-
-        /* -- Motion / duration (drives duration-* / ease-* utilities) -- */
-        --duration-fast: 150ms;
-        --duration-normal: 250ms;
-        --duration-slow: 400ms;
-        --duration-slower: 600ms;
-        --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-        --ease-decelerate: cubic-bezier(0, 0, 0, 1);
-        --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+        {# Values come from src/_data/theme.json. This keeps the layout as an
+           adapter and leaves the token manifest as the authoritative module.
+           The `safe` filter is intentional: theme.json is trusted project
+           data containing CSS literals, not user/CMS input. #}
+        {% for section in theme.sections %}
+          /* -- {{ section.label }} -- */
+          {% for token in section.tokens %}
+            {{ token.name }}: {{ token.value | safe }};
+          {% endfor %}
+        {% endfor %}
       }
     </style>
 
@@ -162,7 +105,12 @@
        Pinned major version: bump deliberately. `defer` so it doesn't block
        <head> parse; deferred scripts execute before DOMContentLoaded, so
        icons.js (also deferred, at end of <body>) sees `window.lucide`. #}
-    <script defer src="https://unpkg.com/lucide@1.16.0/dist/umd/lucide.js"></script>
+    <script
+      defer
+      crossorigin="anonymous"
+      integrity="sha384-T8akqsreXpbv2/2EEJuq+N2Qiy1xZOom6kCvqIeITxBHl6XQ07MMg1wsDCc9tzVp"
+      src="https://unpkg.com/lucide@1.16.0/dist/umd/lucide.js"
+    ></script>
   </head>
 
   <body>
@@ -171,6 +119,7 @@
     {{ content | safe }}
 
     {# -- JS modules (deferred) --------------------------------------------- #}
+    <script defer src="/assets/js/page-lifecycle.js"></script>
     <script defer src="/assets/js/observer.js"></script>
     <script defer src="/assets/js/theme-toggle.js"></script>
     <script defer src="/assets/js/view-transitions.js"></script>

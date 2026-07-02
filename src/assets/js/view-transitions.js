@@ -1,19 +1,62 @@
 /**
- * view-transitions.js — Page transition orchestration.
+ * view-transitions.js — Browser navigation adapter for PageLifecycle.
  *
  * - Wraps same-origin navigation in View Transitions API when supported
- * - Fires {{project-name}}:before-page-unload before leaving
- * - Fires {{project-name}}:page-loaded after new content is in place
- * - Graceful fallback: just navigates normally if API unavailable
+ * - Dispatches lifecycle unload/load through PageLifecycle
+ * - Delegates safe DOM swapping to PageLifecycle
+ * - Graceful fallback: normal navigation if View Transitions are unavailable
  */
 
 (function () {
   'use strict';
 
+  const lifecycle = window.PageLifecycle;
+  if (!lifecycle) return;
+
+  // Generated SPA output has its own navigation adapter at the same seam.
+  if (window.PageLifecycleMode === 'spa') return;
+
   // Only enhance if View Transitions API is available
   if (!document.startViewTransition) return;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function fetchDocument(url) {
+    return fetch(url.href)
+      .then(function (res) {
+        if (!res.ok) throw new Error('Navigation fetch failed: ' + res.status);
+        return res.text();
+      })
+      .then(function (html) {
+        return lifecycle.parseHTML(html);
+      });
+  }
+
+  function applyDocument(doc, url) {
+    lifecycle.swapMainFromDocument(doc);
+    document.title = doc.title;
+    if (url) history.pushState(null, '', url.href);
+    lifecycle.dispatchPageLoaded({ url: url ? url.href : window.location.href });
+  }
+
+  function navigateTo(url) {
+    lifecycle.dispatchBeforePageUnload({ url: url.href });
+
+    if (reducedMotion.matches) {
+      window.location.href = url.href;
+      return;
+    }
+
+    const transition = document.startViewTransition(function () {
+      return fetchDocument(url).then(function (doc) {
+        applyDocument(doc, url);
+      });
+    });
+
+    transition.updateCallbackDone.catch(function () {
+      window.location.href = url.href;
+    });
+  }
 
   // Intercept clicks on same-origin anchor links
   document.addEventListener('click', function (e) {
@@ -35,64 +78,19 @@
     if (e.metaKey || e.ctrlKey || e.shiftKey) return;
 
     e.preventDefault();
-
-    // Dispatch cleanup event
-    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
-
-    if (reducedMotion.matches) {
-      // Skip animation, just navigate
-      window.location.href = url.href;
-      return;
-    }
-
-    document.startViewTransition(function () {
-      return fetch(url.href)
-        .then(function (res) {
-          return res.text();
-        })
-        .then(function (html) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-
-          // Swap main content
-          const newMain = doc.querySelector('#main-content');
-          const currentMain = document.querySelector('#main-content');
-          if (newMain && currentMain) {
-            currentMain.innerHTML = newMain.innerHTML;
-          }
-
-          // Update title
-          document.title = doc.title;
-
-          // Update URL
-          history.pushState(null, '', url.href);
-
-          // Re-init modules
-          document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
-        });
-    });
+    navigateTo(url);
   });
 
   // Handle back/forward navigation
   window.addEventListener('popstate', function () {
-    document.dispatchEvent(new CustomEvent('{{project-name}}:before-page-unload'));
+    lifecycle.dispatchBeforePageUnload({ url: window.location.href });
 
-    fetch(window.location.href)
-      .then(function (res) {
-        return res.text();
+    fetchDocument(new URL(window.location.href))
+      .then(function (doc) {
+        applyDocument(doc);
       })
-      .then(function (html) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        const newMain = doc.querySelector('#main-content');
-        const currentMain = document.querySelector('#main-content');
-        if (newMain && currentMain) {
-          currentMain.innerHTML = newMain.innerHTML;
-        }
-
-        document.title = doc.title;
-        document.dispatchEvent(new CustomEvent('{{project-name}}:page-loaded'));
+      .catch(function () {
+        window.location.reload();
       });
   });
 })();

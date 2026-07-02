@@ -12,7 +12,6 @@ export default [
       '.cache/',
       '.eleventy-cache/',
       'source-reference/',
-      'scripts/',
     ],
   },
 
@@ -29,10 +28,7 @@ export default [
     },
     rules: {
       ...js.configs.recommended.rules,
-      'no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-var': 'warn',
       'prefer-const': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
@@ -53,10 +49,7 @@ export default [
     },
     rules: {
       ...js.configs.recommended.rules,
-      'no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-console': 'off',
     },
   },
@@ -73,10 +66,24 @@ export default [
     },
     rules: {
       ...js.configs.recommended.rules,
-      'no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
+      'no-console': 'off',
+    },
+  },
+
+  // -- Node helper scripts (CommonJS) ----------------------------------------
+  {
+    files: ['scripts/**/*.cjs'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'commonjs',
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-console': 'off',
     },
   },
