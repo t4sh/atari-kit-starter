@@ -212,6 +212,13 @@ function copyDirSync(src, dest) {
 
 // -- Inline CSS/JS/Images ---------------------------------------------------
 
+function resolveAssetPath(value, htmlDir) {
+  const clean = value.split('?')[0].split('#')[0];
+  const assetIndex = clean.indexOf('/assets/');
+  if (assetIndex !== -1) return join(OUT_DIR, clean.slice(assetIndex + 1));
+  return clean.startsWith('/') ? join(OUT_DIR, clean) : join(htmlDir, clean);
+}
+
 function inlineCSS(html, htmlDir) {
   // Match any <link ...> tag, then pick out rel/href from the attrs so the
   // order doesn't matter (<link rel=".." href=".."> vs <link href=".." rel="..">).
@@ -221,7 +228,7 @@ function inlineCSS(html, htmlDir) {
     if (!hrefMatch) return match;
     const href = hrefMatch[1];
     if (href.startsWith('http://') || href.startsWith('https://')) return match;
-    const cssPath = href.startsWith('/') ? join(OUT_DIR, href) : join(htmlDir, href);
+    const cssPath = resolveAssetPath(href, htmlDir);
     const css = readFileOrEmpty(cssPath);
     if (!css) {
       console.warn(`  [inline] missing CSS: ${href} (kept as external <link>)`);
@@ -234,7 +241,7 @@ function inlineCSS(html, htmlDir) {
 function inlineJS(html, htmlDir) {
   return html.replace(/<script\s+[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi, (match, src) => {
     if (src.startsWith('http://') || src.startsWith('https://')) return match;
-    const jsPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
+    const jsPath = resolveAssetPath(src, htmlDir);
     const js = readFileOrEmpty(jsPath);
     if (!js) {
       console.warn(`  [inline] missing JS: ${src} (kept as external <script>)`);
@@ -247,7 +254,7 @@ function inlineJS(html, htmlDir) {
 function inlineImages(html, htmlDir) {
   return html.replace(/(<img\s+[^>]*src=["'])([^"']+)(["'][^>]*>)/gi, (match, pre, src, post) => {
     if (src.startsWith('http') || src.startsWith('data:')) return match;
-    const imgPath = src.startsWith('/') ? join(OUT_DIR, src) : join(htmlDir, src);
+    const imgPath = resolveAssetPath(src, htmlDir);
     const dataUri = fileToBase64DataUri(imgPath);
     if (!dataUri) {
       console.warn(`  [inline] missing image: ${src} (kept as external <img>)`);

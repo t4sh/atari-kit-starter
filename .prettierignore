@@ -10,3 +10,5 @@ node_modules/
 # Contains Nunjucks loops inside <style type="text/tailwindcss"> for the
 # generated Tailwind @theme block; Prettier's CSS parser cannot parse it.
 src/_includes/layouts/base.njk
+# Plaintext Nunjucks directives must preserve line breaks for crawler syntax.
+src/pages/robots.txt.njk

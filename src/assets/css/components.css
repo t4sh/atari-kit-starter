@@ -371,4 +371,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* -- Not found ------------------------------------------------------------ */
+  .not-found {
+    text-align: center;
+  }
+
+  .not-found__copy {
+    max-width: var(--content-measure);
+    margin: var(--space-4) auto;
+    color: var(--on-surface-variant);
+  }
 }

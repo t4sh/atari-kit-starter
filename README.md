@@ -25,6 +25,31 @@ uses the root path automatically. To override this, add a repository variable na
 Nunjucks runs during the build; GitHub Pages serves the generated `out/` directory and does
 not execute Nunjucks or Node.js at request time.
 
+Production metadata is controlled with environment variables:
+
+```bash
+SITE_BASE_URL=https://example.com SITE_INDEXABLE=true npm run build:production
+```
+
+`SITE_ANALYTICS_ENABLED=true` opts into the provider-neutral consent hook. It performs no
+network requests itself; a project-specific integration can listen for
+`site:analytics-consent`.
+
+## Quality and production checks
+
+```bash
+npm run verify          # content, design, production build, artifact checks, tests
+npm run check:a11y      # home/about/404 × desktop/mobile/reduced-motion
+npm run check:visual    # four lightweight screenshot comparisons
+npm run og:generate     # deterministic 1200×630 per-route PNG images
+npm run check:og-images # verify manifest, image format, and rendered references
+```
+
+The production build compiles Tailwind locally. Regular `npm run dev` retains the browser
+Tailwind mode for fast prototyping. The visual CI workflow captures the base and candidate
+on the same Ubuntu runner, avoiding cross-platform baseline drift. Local convenience
+baselines can be refreshed with `npm run check:visual -- --update`.
+
 ## What You Get
 
 - **3 output formats** — dev server, standalone HTML files, single-file SPA
@@ -109,9 +134,11 @@ Keep the starter minimal by default. When a project grows toward production, use
 | Command                    | Description                   |
 | -------------------------- | ----------------------------- |
 | `npm run dev`              | Dev server at localhost:3000  |
-| `npm run build`            | 11ty build → `out/`           |
+| `npm run build`            | Prototype 11ty build → `out/` |
+| `npm run build:production` | Compiled Tailwind + 11ty      |
 | `npm run build:standalone` | Flat HTML → `out-standalone/` |
 | `npm run build:spa`        | SPA → `out-spa/app.html`      |
+| `npm run verify`           | Full standalone quality gate  |
 | `npm run lint`             | ESLint + Stylelint            |
 | `npm run format`           | Prettier                      |
 

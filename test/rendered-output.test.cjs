@@ -39,7 +39,10 @@ test('Eleventy prefixes internal URLs for GitHub Pages project sites', () => {
 
   const home = readFileSync('out/index.html', 'utf8');
   const about = readFileSync('out/about/index.html', 'utf8');
-  assert.match(home, /href="\/atari-kit-starter\/assets\/css\/tokens\.css"/);
-  assert.match(home, /href="\/atari-kit-starter\/about\/"/);
-  assert.match(about, /src="\/atari-kit-starter\/assets\/js\/theme-toggle\.js"/);
+  assert.match(home, /href="\/atari-kit-starter\/assets\/css\/tokens\.css\?v=[^"]+"/);
+  assert.ok(
+    (home.match(/href="\/atari-kit-starter\/about\/"/g) || []).length >= 4,
+    'navigation, footer, and button macros should prefix internal links'
+  );
+  assert.match(about, /src="\/atari-kit-starter\/assets\/js\/theme-toggle\.js\?v=[^"]+"/);
 });

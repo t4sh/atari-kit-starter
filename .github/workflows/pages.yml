@@ -42,10 +42,16 @@ jobs:
             prefix="/${GITHUB_REPOSITORY##*/}"
           fi
           echo "ELEVENTY_PATH_PREFIX=$prefix" >> "$GITHUB_ENV"
+          echo "SITE_BASE_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io${prefix}" >> "$GITHUB_ENV"
           echo "Using Eleventy path prefix: ${prefix:-/}"
 
-      - name: Build site
-        run: npm run build
+      - name: Build and verify site
+        env:
+          SITE_INDEXABLE: 'true'
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          npm run build:production
+          npm run verify:build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

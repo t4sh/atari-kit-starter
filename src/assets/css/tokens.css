@@ -43,6 +43,9 @@
   --outline: oklch(0.75 0 0);
   --outline-variant: oklch(0.85 0 0);
 
+  /* == Content sizing ====================================================== */
+  --content-measure: 40rem;
+
   /* == Sizing — fixed-size components (avatars, icons) =====================
      Separate from --space-* spacing scale: these size component *primitives*,
      not layout gaps. Not in any Tailwind 4 namespace — referenced only from

@@ -1,0 +1,20 @@
+{
+  "/404": {
+    "title": "Page not found",
+    "description": "The requested page could not be found.",
+    "file": "src/assets/images/og/404.png",
+    "hash": "bbb38a9c4ae0396050439ed5bf22afd46312100567e8716bf53ff74290bd1d36"
+  },
+  "/about": {
+    "title": "About",
+    "description": "About this project — atari-kit-starter scaffold.",
+    "file": "src/assets/images/og/about.png",
+    "hash": "3d8d520a9bd9a090427a3607b137234d7af0fdd2e548f5c3ad43bac2dbf1c532"
+  },
+  "/": {
+    "title": "Home",
+    "description": "Build polished static prototypes with Eleventy, Nunjucks, Tailwind, and vanilla JavaScript.",
+    "file": "src/assets/images/og/index.png",
+    "hash": "64aa2b4c5db0691ab0dce7d85bb3dcb429548efaa0f68c112c5e7ad71e6b4b79"
+  }
+}

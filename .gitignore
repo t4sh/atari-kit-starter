@@ -10,6 +10,7 @@ out-spa/
 
 # ── Tailwind / LightningCSS ──────────────────────────────────
 .tailwindcss-cache/
+src/assets/css/tailwind.css
 .lightningcss-cache/
 
 # ── Node / npm ────────────────────────────────────────────────
@@ -45,6 +46,7 @@ Desktop.ini
 
 # ── Testing / screenshots ────────────────────────────────────
 _screenshots/
+visual/current/
 
 # ── Misc ──────────────────────────────────────────────────────
 *.log

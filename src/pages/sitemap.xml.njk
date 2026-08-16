@@ -1,0 +1,12 @@
+---
+permalink: /sitemap.xml
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% for item in collections.all | sort_by('url') %}
+    {% if item.url and item.url != '/sitemap.xml' and item.url != '/robots.txt' and item.url != '/404.html' %}
+      <url><loc>{{ item.url | page_canonical_url(site.baseUrl) }}</loc></url>
+    {% endif %}
+  {% endfor %}
+</urlset>

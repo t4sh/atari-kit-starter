@@ -32,8 +32,11 @@ jobs:
       - name: Format check
         run: npm run format:check
 
-      - name: Build
-        run: npm run build
+      - name: Build and verify
+        run: npm run verify
 
-      - name: Test
-        run: npm test
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Accessibility
+        run: npm run check:a11y

@@ -1,19 +1,25 @@
 const markdownIt = require('markdown-it');
+const site = require('./src/_data/site.js');
+const pageIdentity = require('./src/_lib/page-identity.js');
 const { safeAttrName, safeUrl } = require('./scripts/template-safety.cjs');
-
-const configuredPathPrefix = process.env.ELEVENTY_PATH_PREFIX || '';
-const pathPrefix = configuredPathPrefix.replace(/^\/+|\/+$/g, '');
 
 function sitePath(value) {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) {
     return value;
   }
 
-  const normalizedPath = value === '/' ? '/' : value;
-  return pathPrefix ? `/${pathPrefix}${normalizedPath}` : normalizedPath;
+  return site.pathPrefix ? `${site.pathPrefix}${value}` : value;
 }
 
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addGlobalData('build', {
+    id:
+      process.env.COMMIT_SHA ||
+      process.env.GITHUB_SHA ||
+      new Date().toISOString().replace(/[^0-9]/g, ''),
+    sha: process.env.COMMIT_SHA || process.env.GITHUB_SHA || 'local',
+  });
+
   // -- Markdown engine -------------------------------------------------------
   // html: false — markdown authors cannot inject raw HTML. Flip to true only
   // when every markdown source (frontmatter, _data, *.md) is trusted.
@@ -58,6 +64,13 @@ module.exports = function (eleventyConfig) {
   // ELEVENTY_PATH_PREFIX=/repository-name in CI for project-site deployments.
   eleventyConfig.addFilter('site_path', sitePath);
   eleventyConfig.addFilter('safe_attr_name', safeAttrName);
+  eleventyConfig.addFilter('page_canonical_path', pageIdentity.normalizePath);
+  eleventyConfig.addFilter('page_canonical_url', (url, baseUrl) =>
+    pageIdentity.canonicalUrl(baseUrl, url)
+  );
+  eleventyConfig.addFilter('page_og_image_url', (url, baseUrl, override) =>
+    pageIdentity.ogImageUrl(baseUrl, url, override)
+  );
 
   // Array slicing — named `slice_range` to avoid shadowing Nunjucks'
   // built-in `slice` filter (which has a different "chunks of N" signature).
@@ -118,6 +131,7 @@ module.exports = function (eleventyConfig) {
 
   // -- Watch targets ---------------------------------------------------------
   eleventyConfig.addWatchTarget('src/assets/');
+  eleventyConfig.addWatchTarget('src/_data/');
 
   // -- Dev server ------------------------------------------------------------
   eleventyConfig.setServerOptions({

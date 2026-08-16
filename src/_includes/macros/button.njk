@@ -43,7 +43,11 @@
   {%- if iconOnly %}{%- set classes = classes + " btn--icon" -%}{% endif -%}
 
   {%- if href -%}
-    <a href="{{ href | safe_url }}" class="{{ classes }}" {{- _attrs(opts.attrs) | safe -}}>
+    <a
+      href="{{ href | site_path | safe_url }}"
+      class="{{ classes }}"
+      {{- _attrs(opts.attrs) | safe -}}
+    >
       {%- if icon %}<i data-lucide="{{ icon }}" style="width:1em;height:1em;"></i>{% endif -%}
       {%- if not iconOnly %}
         {{ label }}

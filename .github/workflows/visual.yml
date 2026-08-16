@@ -1,0 +1,61 @@
+name: visual-regression
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'styles/**'
+      - 'scripts/check-visual.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+
+      - name: Checkout comparison base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || 'HEAD^' }}
+          path: .visual-base
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install candidate
+        run: npm ci --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Capture comparison base
+        run: |
+          (cd .visual-base && ../node_modules/.bin/eleventy)
+          VISUAL_OUTPUT_DIR=.visual-base/out \
+          VISUAL_BASELINE_DIR=visual/ci-base \
+          VISUAL_CURRENT_DIR=visual/ci-base-current \
+          npm run check:visual -- --update
+
+      - name: Build candidate
+        run: npm run build
+
+      - name: Compare candidate
+        run: |
+          VISUAL_BASELINE_DIR=visual/ci-base \
+          VISUAL_CURRENT_DIR=visual/current \
+          npm run check:visual
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-comparison
+          path: |
+            visual/ci-base
+            visual/current

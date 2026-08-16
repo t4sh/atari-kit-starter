@@ -20,6 +20,8 @@
   if (!document.startViewTransition) return;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const scrollPositions = new Map();
+  history.scrollRestoration = 'manual';
 
   function fetchDocument(url) {
     return fetch(url.href)
@@ -32,14 +34,27 @@
       });
   }
 
-  function applyDocument(doc, url) {
-    lifecycle.swapMainFromDocument(doc);
+  function restoreScroll(url, position) {
+    if (url && url.hash) {
+      const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+      if (target) target.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      return;
+    }
+    window.scrollTo(position || { top: 0, left: 0, behavior: 'auto' });
+  }
+
+  function applyDocument(doc, url, options) {
+    if (!lifecycle.swapMainFromDocument(doc)) {
+      throw new Error('Fetched document has no main content');
+    }
     document.title = doc.title;
-    if (url) history.pushState(null, '', url.href);
+    if (url && !options?.popstate) history.pushState(null, '', url.href);
+    restoreScroll(url, options?.scrollPosition);
     lifecycle.dispatchPageLoaded({ url: url ? url.href : window.location.href });
   }
 
   function navigateTo(url) {
+    scrollPositions.set(window.location.href, { top: window.scrollY, left: window.scrollX });
     lifecycle.dispatchBeforePageUnload({ url: url.href });
 
     if (reducedMotion.matches) {
@@ -49,7 +64,7 @@
 
     const transition = document.startViewTransition(function () {
       return fetchDocument(url).then(function (doc) {
-        applyDocument(doc, url);
+        applyDocument(doc, url, { popstate: false });
       });
     });
 
@@ -85,9 +100,10 @@
   window.addEventListener('popstate', function () {
     lifecycle.dispatchBeforePageUnload({ url: window.location.href });
 
-    fetchDocument(new URL(window.location.href))
+    const url = new URL(window.location.href);
+    fetchDocument(url)
       .then(function (doc) {
-        applyDocument(doc);
+        applyDocument(doc, url, { popstate: true, scrollPosition: scrollPositions.get(url.href) });
       })
       .catch(function () {
         window.location.reload();

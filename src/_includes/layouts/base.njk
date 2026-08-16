@@ -23,6 +23,31 @@
 
     <title>{{ title or site.name }}</title>
     <meta name="description" content="{{ description or site.description }}" />
+    <meta name="site-build-id" content="{{ build.id }}" />
+    <meta name="site-build-sha" content="{{ build.sha }}" />
+    {% if site.indexable %}
+      {%- set canonicalUrl = page.url | page_canonical_url(site.baseUrl) -%}
+      {%- set ogImageUrl = page.url | page_og_image_url(site.baseUrl, ogImage) -%}
+      <link rel="canonical" href="{{ canonicalUrl }}" />
+      <meta property="og:type" content="{{ ogType or 'website' }}" />
+      <meta property="og:site_name" content="{{ site.name }}" />
+      <meta property="og:title" content="{{ ogTitle or title or site.name }}" />
+      <meta property="og:description" content="{{ ogDescription or description or site.description }}" />
+      <meta property="og:url" content="{{ canonicalUrl }}" />
+      <meta property="og:image" content="{{ ogImageUrl }}" />
+      <meta property="og:image:alt" content="{{ ogImageAlt or title or site.name }}" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="{{ ogTitle or title or site.name }}" />
+      <meta name="twitter:description" content="{{ ogDescription or description or site.description }}" />
+      <meta name="twitter:image" content="{{ ogImageUrl }}" />
+      <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': site.name,
+        'description': site.description,
+        'url': site.baseUrl
+      } | jsonScript | safe }}</script>
+    {% endif %}
 
     {# -- Favicon (simple text-based for now) -------------------------------- #}
     <link
@@ -74,11 +99,14 @@
       Keep light-mode values here; dark-mode overrides live in tokens.css via
       the `html.dark` cascade and apply at runtime.
     #}
-    <script
-      crossorigin="anonymous"
-      src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
-    ></script>
-    <style type="text/tailwindcss">
+    {% if site.compiledTailwind %}
+      <link rel="stylesheet" href="{{ '/assets/css/tailwind.css' | site_path }}?v={{ build.id }}" />
+    {% else %}
+      <script
+        crossorigin="anonymous"
+        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
+      ></script>
+      <style type="text/tailwindcss">
       @layer base, components, utilities;
 
       @theme {
@@ -93,13 +121,14 @@
           {% endfor %}
         {% endfor %}
       }
-    </style>
+      </style>
+    {% endif %}
 
     {# -- CSS files ---------------------------------------------------------- #}
-    <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | site_path }}" />
-    <link rel="stylesheet" href="{{ '/assets/css/base.css' | site_path }}" />
-    <link rel="stylesheet" href="{{ '/assets/css/components.css' | site_path }}" />
-    <link rel="stylesheet" href="{{ '/assets/css/utilities.css' | site_path }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | site_path }}?v={{ build.id }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/base.css' | site_path }}?v={{ build.id }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/components.css' | site_path }}?v={{ build.id }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/utilities.css' | site_path }}?v={{ build.id }}" />
 
     {# -- Lucide Icons CDN ---------------------------------------------------
        Pinned major version: bump deliberately. `defer` so it doesn't block
@@ -119,11 +148,14 @@
     {{ content | safe }}
 
     {# -- JS modules (deferred) --------------------------------------------- #}
-    <script defer src="{{ '/assets/js/page-lifecycle.js' | site_path }}"></script>
-    <script defer src="{{ '/assets/js/observer.js' | site_path }}"></script>
-    <script defer src="{{ '/assets/js/theme-toggle.js' | site_path }}"></script>
-    <script defer src="{{ '/assets/js/view-transitions.js' | site_path }}"></script>
-    <script defer src="{{ '/assets/js/icons.js' | site_path }}"></script>
-    <script defer src="{{ '/assets/js/mobile-menu.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/page-lifecycle.js' | site_path }}?v={{ build.id }}"></script>
+    <script defer src="{{ '/assets/js/observer.js' | site_path }}?v={{ build.id }}"></script>
+    <script defer src="{{ '/assets/js/theme-toggle.js' | site_path }}?v={{ build.id }}"></script>
+    <script defer src="{{ '/assets/js/view-transitions.js' | site_path }}?v={{ build.id }}"></script>
+    <script defer src="{{ '/assets/js/icons.js' | site_path }}?v={{ build.id }}"></script>
+    <script defer src="{{ '/assets/js/mobile-menu.js' | site_path }}?v={{ build.id }}"></script>
+    {% if site.analyticsEnabled %}
+      <script defer src="{{ '/assets/js/analytics.js' | site_path }}?v={{ build.id }}"></script>
+    {% endif %}
   </body>
 </html>

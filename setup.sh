@@ -45,7 +45,7 @@ for f in \
   package-lock.json \
   AGENTS.md \
   CLAUDE.md \
-  src/_data/site.json \
+  src/_data/site.js \
   .cursor/rules/index.mdc \
 ; do
   if [ -f "$f" ]; then

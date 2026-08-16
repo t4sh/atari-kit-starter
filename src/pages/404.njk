@@ -1,0 +1,15 @@
+---
+layout: layouts/page.njk
+title: Page not found
+description: The requested page could not be found.
+permalink: /404.html
+---
+
+<section class="section">
+  <div class="container not-found">
+    <p class="eyebrow">404</p>
+    <h1>That page could not be found.</h1>
+    <p class="not-found__copy">The link may be outdated, or the page may have moved.</p>
+    <a class="btn btn--primary" href="{{ '/' | site_path | safe_url }}">Return home</a>
+  </div>
+</section>
