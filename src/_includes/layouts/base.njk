@@ -96,10 +96,10 @@
     </style>
 
     {# -- CSS files ---------------------------------------------------------- #}
-    <link rel="stylesheet" href="/assets/css/tokens.css" />
-    <link rel="stylesheet" href="/assets/css/base.css" />
-    <link rel="stylesheet" href="/assets/css/components.css" />
-    <link rel="stylesheet" href="/assets/css/utilities.css" />
+    <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | site_path }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/base.css' | site_path }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/components.css' | site_path }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/utilities.css' | site_path }}" />
 
     {# -- Lucide Icons CDN ---------------------------------------------------
        Pinned major version: bump deliberately. `defer` so it doesn't block
@@ -119,11 +119,11 @@
     {{ content | safe }}
 
     {# -- JS modules (deferred) --------------------------------------------- #}
-    <script defer src="/assets/js/page-lifecycle.js"></script>
-    <script defer src="/assets/js/observer.js"></script>
-    <script defer src="/assets/js/theme-toggle.js"></script>
-    <script defer src="/assets/js/view-transitions.js"></script>
-    <script defer src="/assets/js/icons.js"></script>
-    <script defer src="/assets/js/mobile-menu.js"></script>
+    <script defer src="{{ '/assets/js/page-lifecycle.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/observer.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/theme-toggle.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/view-transitions.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/icons.js' | site_path }}"></script>
+    <script defer src="{{ '/assets/js/mobile-menu.js' | site_path }}"></script>
   </body>
 </html>

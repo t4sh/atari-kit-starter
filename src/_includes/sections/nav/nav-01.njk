@@ -7,7 +7,7 @@
   <nav class="container flex-between" style="height: 4rem;" aria-label="Main navigation">
     {# -- Logo / Brand ----------------------------------------------------- #}
     <a
-      href="/"
+      href="{{ '/' | site_path | safe_url }}"
       class="flex items-center gap-2 no-underline"
       style="font-family: var(--font-heading); font-weight: 700; font-size: var(--text-xl); color: var(--on-surface);"
     >
@@ -24,7 +24,7 @@
         {%- set isActive = (item.url | normalize_path) == here -%}
         <li>
           <a
-            href="{{ item.url | safe_url }}"
+            href="{{ item.url | site_path | safe_url }}"
             {% if isActive %}aria-current="page"{% endif %}
             style="color: var(--on-surface-variant); text-decoration: none; transition: color 150ms;"
           >
@@ -72,7 +72,7 @@
         {%- set isActive = (item.url | normalize_path) == here -%}
         <li>
           <a
-            href="{{ item.url | safe_url }}"
+            href="{{ item.url | site_path | safe_url }}"
             {% if isActive %}aria-current="page"{% endif %}
             style="display: block; padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); color: var(--on-surface); text-decoration: none;"
           >

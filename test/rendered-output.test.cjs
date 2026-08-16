@@ -29,3 +29,17 @@ test('Eleventy render keeps default section content on the homepage', () => {
   assert.match(home, /Ready to get started\?/);
   assert.doesNotMatch(home, /undefined/);
 });
+
+test('Eleventy prefixes internal URLs for GitHub Pages project sites', () => {
+  execFileSync('npm', ['run', 'build'], {
+    cwd: process.cwd(),
+    stdio: 'pipe',
+    env: { ...process.env, ELEVENTY_PATH_PREFIX: '/atari-kit-starter' },
+  });
+
+  const home = readFileSync('out/index.html', 'utf8');
+  const about = readFileSync('out/about/index.html', 'utf8');
+  assert.match(home, /href="\/atari-kit-starter\/assets\/css\/tokens\.css"/);
+  assert.match(home, /href="\/atari-kit-starter\/about\/"/);
+  assert.match(about, /src="\/atari-kit-starter\/assets\/js\/theme-toggle\.js"/);
+});

@@ -1,6 +1,18 @@
 const markdownIt = require('markdown-it');
 const { safeAttrName, safeUrl } = require('./scripts/template-safety.cjs');
 
+const configuredPathPrefix = process.env.ELEVENTY_PATH_PREFIX || '';
+const pathPrefix = configuredPathPrefix.replace(/^\/+|\/+$/g, '');
+
+function sitePath(value) {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) {
+    return value;
+  }
+
+  const normalizedPath = value === '/' ? '/' : value;
+  return pathPrefix ? `/${pathPrefix}${normalizedPath}` : normalizedPath;
+}
+
 module.exports = function (eleventyConfig) {
   // -- Markdown engine -------------------------------------------------------
   // html: false — markdown authors cannot inject raw HTML. Flip to true only
@@ -40,6 +52,11 @@ module.exports = function (eleventyConfig) {
 
   // Template safety filters share one implementation in scripts/template-safety.cjs.
   eleventyConfig.addFilter('safe_url', safeUrl);
+
+  // Prefix internal URLs for GitHub Pages project sites. Leave the default
+  // empty for a user/organization site or a custom domain. Set
+  // ELEVENTY_PATH_PREFIX=/repository-name in CI for project-site deployments.
+  eleventyConfig.addFilter('site_path', sitePath);
   eleventyConfig.addFilter('safe_attr_name', safeAttrName);
 
   // Array slicing — named `slice_range` to avoid shadowing Nunjucks'

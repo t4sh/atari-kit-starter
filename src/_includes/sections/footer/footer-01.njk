@@ -14,7 +14,7 @@
           {%- set isActive = (item.url | normalize_path) == here -%}
           <li>
             <a
-              href="{{ item.url | safe_url }}"
+              href="{{ item.url | site_path | safe_url }}"
               {% if isActive %}aria-current="page"{% endif %}
               style="color: var(--on-surface-variant); text-decoration: none;"
             >

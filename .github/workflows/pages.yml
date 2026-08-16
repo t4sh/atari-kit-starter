@@ -1,0 +1,64 @@
+name: deploy-pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Determine site path
+        env:
+          CONFIGURED_PATH_PREFIX: ${{ vars.ELEVENTY_PATH_PREFIX }}
+        run: |
+          if [ -n "$CONFIGURED_PATH_PREFIX" ]; then
+            prefix="$CONFIGURED_PATH_PREFIX"
+          elif [ "${GITHUB_REPOSITORY##*/}" = "${GITHUB_REPOSITORY%%/*}.github.io" ]; then
+            prefix=""
+          else
+            prefix="/${GITHUB_REPOSITORY##*/}"
+          fi
+          echo "ELEVENTY_PATH_PREFIX=$prefix" >> "$GITHUB_ENV"
+          echo "Using Eleventy path prefix: ${prefix:-/}"
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

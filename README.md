@@ -11,6 +11,20 @@ npm run dev
 
 Open [localhost:3000](http://localhost:3000) to see your project.
 
+## Deploy to GitHub Pages
+
+This starter builds static Eleventy output and includes a GitHub Actions workflow at
+`.github/workflows/pages.yml`. Push to `main`, then enable **Settings → Pages → Source:
+GitHub Actions**.
+
+The workflow automatically prefixes internal links and assets for project sites such as
+`https://owner.github.io/repository/`. For a user/organization site or custom domain, it
+uses the root path automatically. To override this, add a repository variable named
+`ELEVENTY_PATH_PREFIX` (for example, `/docs`).
+
+Nunjucks runs during the build; GitHub Pages serves the generated `out/` directory and does
+not execute Nunjucks or Node.js at request time.
+
 ## What You Get
 
 - **3 output formats** — dev server, standalone HTML files, single-file SPA
